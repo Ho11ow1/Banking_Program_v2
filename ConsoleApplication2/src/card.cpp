@@ -26,4 +26,6 @@ void Card::DB_Create()
 	file << "Help!";
 
 	file.close();
+
+
 }
