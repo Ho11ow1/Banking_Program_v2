@@ -19,8 +19,8 @@ public:
     uint64_t Card_Balance;
 
 private:
-    uint64_t m_MIN = 0000000000000001;
-    uint64_t m_MAX = 999999999999999;
+    uint64_t m_MIN = 1000000000000000;
+    uint64_t m_MAX = 9999999999999999;
 
 private:
     std::string GenNumber();

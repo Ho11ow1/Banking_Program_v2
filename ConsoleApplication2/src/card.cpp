@@ -1,7 +1,6 @@
 #include "./card.h"
 
 #include <random>
-#include <sstream>
 #include <fstream>
 
 std::string Card::GenNumber()
@@ -10,14 +9,12 @@ std::string Card::GenNumber()
 	std::mt19937 eng(rd());
 	std::uniform_int_distribution<uint64_t> number(m_MIN, m_MAX);
 
-	DB_Create();
+	//DB_Create();
 
-	std::stringstream ss;
-	ss << number(eng);
-
-	return ss.str();
+	uint64_t randomNumber = number(eng);
+	return std::to_string(randomNumber);
 }
-
+/*
 void Card::DB_Create()
 {
 	std::fstream file;
@@ -29,3 +26,4 @@ void Card::DB_Create()
 
 
 }
+*/
