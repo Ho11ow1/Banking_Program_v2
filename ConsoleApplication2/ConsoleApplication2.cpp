@@ -1,20 +1,23 @@
 #include "./src/card.h"
+#include <vector>
 
 class Banking
 {
 public:
-    void Run() const
+    void Run()
     {
-        printf("%s, %s", "Card number: ", card->GetCardNumber());
+        cards.push_back(Card());
+
+        printf("%s %s", "Card number: ", cards[0].GetCardNumber().c_str());
+        
     }
 
 private:
-    std::unique_ptr<Card> card = std::make_unique<Card>();
+    std::vector<Card> cards;
 };
 
 int main()
 {
-
     Banking bank;
     bank.Run();
 
