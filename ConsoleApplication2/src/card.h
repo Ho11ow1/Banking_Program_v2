@@ -2,6 +2,9 @@
 #define CARD_H
 
 #include <string>
+#include <random>
+#include <fstream>
+#include <filesystem>
 
 class Card 
 {
@@ -19,13 +22,12 @@ public:
     uint64_t Card_Balance;
 
 private:
-    uint64_t m_MIN = 1000000000000000;
-    uint64_t m_MAX = 9999999999999999;
+    const uint64_t m_MIN = 1000000000000000;
+    const uint64_t m_MAX = 9999999999999999;
 
 private:
-    std::string GenNumber();
-    void DB_Create();
-    std::string B2 = "2B.txt";
+    std::string GenNumber(); 
+    void DB_Create(); // string length error hell
 };
 
 #endif
