@@ -2,32 +2,29 @@
 #define CARD_H
 
 #include <string>
-#include <random>
-#include <fstream>
-#include <filesystem>
+#include <memory>
 
-class Card 
+class Card
 {
 public:
-    Card() : Card_Number(GenNumber()), Card_Balance(0) {};
+	void Run()
+	{
+		Gen_Card_Number();
+	}
 
-    Card(Card&& old) noexcept :
-        Card_Number(std::move(old.Card_Number)),
-        Card_Balance(std::move(old.Card_Balance)) {}
-
-    std::string GetCardNumber() const { return Card_Number; };
+	void Show_Card_Number();
 
 public:
-    std::string Card_Number;
-    uint64_t Card_Balance;
+	uint_fast64_t Card_number{};
+	// Seperation
+	std::string Owner_name;
+	std::string Owner_Surname;
 
 private:
-    const uint64_t m_MIN = 1000000000000000;
-    const uint64_t m_MAX = 9999999999999999;
-
-private:
-    std::string GenNumber(); 
-    void DB_Create(); // string length error hell
+	void Gen_Card_Number();
+	// Seperation
+	uint8_t m_PIN{};
+	uint8_t m_SCV{};
 };
 
 #endif

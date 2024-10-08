@@ -129,13 +129,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication2.cpp" />
-    <ClCompile Include="src\balance.cpp" />
     <ClCompile Include="src\card.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\balance.h" />
     <ClInclude Include="src\card.h" />
-    <ClInclude Include="src\main.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="2B.txt">
