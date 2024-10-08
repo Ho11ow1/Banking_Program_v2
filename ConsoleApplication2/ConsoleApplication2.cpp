@@ -1,20 +1,20 @@
-#include "./src/card.h"
+#include <stdio.h>
 #include <vector>
-#include <memory>
+
+#include "./src/card.h"
 
 class Banking
 {
 public:
     void Run()
     {
-        cards.push_back(std::make_unique<Card>());
-
-        printf("%s %s", "Card number: ", cards[0] -> GetCardNumber().c_str());
-        
+        car.Run();
+        car.Show_Card_Number();
     }
 
 private:
-    std::vector<std::unique_ptr<Card> > cards;
+    Card car;
+    std::vector<std::unique_ptr<Card>> cards;
 };
 
 int main()
