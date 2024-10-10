@@ -9,7 +9,7 @@ public:
     void Run()
     {
         car.Run();
-        car.Show_Card_Number();
+        car.Show_Card_Details();
     }
 
 private:

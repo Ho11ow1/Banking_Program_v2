@@ -9,22 +9,27 @@ class Card
 public:
 	void Run()
 	{
-		Gen_Card_Number();
+		Set_Card_Details();
 	}
 
-	void Show_Card_Number();
-
-public:
-	uint_fast64_t Card_number{};
-	// Seperation
-	std::string Owner_name;
-	std::string Owner_Surname;
+	void Show_Card_Details();
 
 private:
-	void Gen_Card_Number();
-	// Seperation
-	uint8_t m_PIN{};
-	uint8_t m_SCV{};
+	uint_fast64_t Gen_Card_Number();
+	void Set_Card_Details();
+
+	std::string Transfer_Card_Number();
+
+	struct CARD
+	{
+		char Card_number[20];
+		// Seperation
+		char Owner_name[25];
+		char Owner_Surname[25];
+
+		uint_fast16_t m_PIN;
+		uint_fast16_t m_SCV;
+	} card;
 };
 
 #endif
