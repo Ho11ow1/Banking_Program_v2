@@ -129,9 +129,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication2.cpp" />
+    <ClCompile Include="src\account.cpp" />
     <ClCompile Include="src\card.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\account.h" />
     <ClInclude Include="src\card.h" />
   </ItemGroup>
   <ItemGroup>

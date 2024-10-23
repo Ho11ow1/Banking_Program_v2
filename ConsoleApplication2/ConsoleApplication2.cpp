@@ -2,18 +2,18 @@
 #include <vector>
 
 #include "./src/card.h"
+#include "./src/account.h"
 
 class Banking
 {
 public:
     void Run()
     {
-        car.Run();
-        car.Show_Card_Details();
+        acc.Run();
     }
 
 private:
-    Card car;
+    Account acc;
     std::vector<std::unique_ptr<Card>> cards;
 };
 
