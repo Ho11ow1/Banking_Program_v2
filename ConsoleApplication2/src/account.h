@@ -3,38 +3,44 @@
 
 #include <memory>
 #include <random>
+#include <stdexcept>
+
+#include "constants.h"
+#include "card.h"
 
 class Card;
 
 class Account
 {
 public:
-    Account() : card(nullptr) {} // Initialize card to nullptr
-    ~Account() {}   // Destructor to free memory
+    Account() noexcept = default;
+    //Account() noexcept : Account_ID{0}, card{nullptr}{}; // Add back when balance implementation is introduced
+    ~Account() noexcept = default;
 
-    void Run()
-    {
-        Create_Account();
-        Set_Card_Details();
-        Show_Card_Details();
-    }
-
-    void Create_Account();
-    void Show_Card_Details();
+    void Run() noexcept;
+    void fn_Create_Account();
+    void fn_Show_Card_Details() const;
 
 private:
-    uint_fast64_t Gen_Card_Number();
-    void Set_Card_Details();
-    std::string Transfer_Card_Number();
-    //Seperation for checks
-    bool ValidateInput(char(&input)[25], uint_fast8_t maxLength, uint_fast8_t minLength);
-    bool ValidateNums(uint_fast16_t& input, uint_fast16_t MaxSize, uint_fast16_t MinSize);
-    //Seperation for PIN / SCV checks. Not as simple as it seems, the user can be very dumb, Give me more Xanax and Benadryl
-    uint_fast16_t Set_Pin(); // ToDo: Finish and check for digits
+    static constexpr uint_fast16_t PIN_LENGTH = 4;
+    static constexpr uint_fast16_t SCV_LENGTH = 3;
+    static constexpr uint_fast64_t MAX_CARD_NUMBER = 9999999999999999;
+
+    uint_fast64_t fn_Gen_Card_Number();
+    std::string fn_Transfer_Card_Number();
+    // Setters
+    void fn_Set_Card_Details();
+    uint_fast16_t fn_Set_Pin();
+    void fn_set_Card_Names(char(&destination)[Constants::NAME_SIZE], const char* prompt) noexcept;
+    // Validation
+    bool fn_ValidateInput(char(&input)[Constants::NAME_SIZE], uint_fast8_t maxLength, uint_fast8_t minLength) const;
+    bool fn_ValidateNums(uint_fast16_t& input, uint_fast16_t MaxSize, uint_fast16_t MinSize) const;
+    bool fn_DB_Exist(const char(&DB_NAME)[Constants::MAX_DB_NAME]) const;
 
 private:
+    char DB[Constants::MAX_DB_NAME]{"2B.txt"};
     uint_fast8_t Account_ID{};
-    Card* card;
+    std::unique_ptr<Card> card{};
 };
 
 #endif

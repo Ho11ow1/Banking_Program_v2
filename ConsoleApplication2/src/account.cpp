@@ -1,157 +1,252 @@
-#include <filesystem>
-#include <random>
+#include <fstream>
+#include <sstream>
 
 #include "account.h"
-#include "card.h"  // Include Card.h
+#include "card.h"  // Include Private Card Children
 
-void Account::Create_Account()
+void Account::Run() noexcept
 {
-    // Allocate memory for card
-    card = new Card(); //unique_ptr should do this
+    try 
+    {
+        // Check if database exists
+        if (!fn_DB_Exist(DB)) 
+        { 
+            printf("Warning: Database not found. Creating new database.\n");
+            std::ofstream file("2B.txt");
+            file.close();
+        }
 
-    /*std::random_device rd;
-    std::mt19937 mt(rd());
-
-    std::uniform_int_distribution<uint_fast8_t> dist(0, 255);
-
-    Account_ID = dist(mt);*/
-
-    printf("%s", "Created account\n");
+        fn_Create_Account();
+        fn_Set_Card_Details();
+        fn_Show_Card_Details();
+    }
+    catch (const std::exception& e) 
+    {
+        printf("Error during account setup: %s\n", e.what());
+    }
 }
 
-uint_fast64_t Account::Gen_Card_Number()
+void Account::fn_Create_Account()
+{
+    try 
+    {
+        card = std::make_unique<Card>();
+        printf("Created account\n\n");
+    }
+    catch (const std::bad_alloc& e) 
+    {
+        printf("Failed to create account: %s\n", e.what());
+        throw;
+    }
+}
+
+uint_fast64_t Account::fn_Gen_Card_Number()
 {
     std::random_device rd;
-    std::mt19937 mt(rd());
-
-    std::uniform_int_distribution<uint_fast64_t> dist(0, 999999999999);
+    std::mt19937_64 mt(rd());
+    std::uniform_int_distribution<uint_fast64_t> dist(0, MAX_CARD_NUMBER);
 
     return dist(mt);
 }
 
-std::string Account::Transfer_Card_Number()
+std::string Account::fn_Transfer_Card_Number()
 {
-    std::string formattedNumber = "";
-    uint_fast64_t cardNumber = Gen_Card_Number();
-    std::string cardNumberStr = std::to_string(cardNumber);
-
-    for (size_t i = 0; i < cardNumberStr.length(); ++i)
+    if (!card) 
     {
-        formattedNumber += cardNumberStr[i];
-        if ((i + 1) % 3 == 0 && i != cardNumberStr.length() - 1)
+        throw std::runtime_error("Card not initialized");
+    }
+
+    std::ostringstream formatted;
+    std::string cardNumberStr = std::to_string(fn_Gen_Card_Number());
+    
+    for (size_t i = 0; i < cardNumberStr.length(); ++i) 
+    {
+        formatted << cardNumberStr[i];
+        if ((i + 1) % 4 == 0 && i != cardNumberStr.length() - 1) 
         {
-            formattedNumber += "_";
+            formatted << '_';
         }
     }
 
-    // Ensure card is allocated
-    if (card != nullptr)
+    if (card) 
     {
-        strncpy_s(card->Card_number, formattedNumber.c_str(), sizeof(card->Card_number) - 1); // Dest, src, sizeof(dest) -(\0 null term)
+        strncpy_s(card->Card_number, formatted.str().c_str(), sizeof(card->Card_number) - 1);
     }
 
-    return formattedNumber;
+    return formatted.str();
 }
 
-void Account::Set_Card_Details()
+void Account::fn_Set_Card_Details()
 {
-    Transfer_Card_Number();
-
-    if (card != nullptr)
+    if (!card) 
     {
-        //Owner_name
-        while (!ValidateInput(card->Owner_name, 24, 3)) 
+        throw std::runtime_error("Card not initialized");
+    }
+
+    fn_Transfer_Card_Number();
+
+    // Set PIN
+    card->m_PIN = fn_Set_Pin();
+
+    // Set SCV
+    do 
+    {
+        printf("Set card.SCV (3 digits): ");
+        scanf_s("%u", &card->m_SCV);
+        while (getchar() != '\n'); // Clear input buffer
+    } 
+    while (!fn_ValidateNums(card->m_SCV, 3, 3));
+
+    fn_set_Card_Names(card->Owner_name, "Set card.Owner_Name");
+    fn_set_Card_Names(card->Owner_Surname, "Set card.Owner_Surname");
+}
+
+uint_fast16_t Account::fn_Set_Pin()
+{
+    constexpr int PIN_LENGTH = 4;
+    char input[PIN_LENGTH + 2];  // +2 for newline and null terminator
+    uint_fast16_t pin;
+    
+    while (true) 
+    {
+        printf("Set card.PIN (%d digits): ", PIN_LENGTH);
+        if (!fgets(input, sizeof(input), stdin)) 
         {
-            printf("Set card.Owner_Name(Max 24 characters): ");
-            fgets(card->Owner_name, 25, stdin); // Read name + \0 ---------- Prevent a buffer overflow
-            card->Owner_name[strcspn(card->Owner_name, "\n")] = '\0'; // Change \n from fgets to \0
+            continue;
         }
 
-        // Owner Surname
-        while (!ValidateInput(card->Owner_Surname, 24, 3)) 
-        {
-            printf("Set card.Owner_Surname(Max 24 characters): ");
-            fgets(card->Owner_Surname, 25, stdin);
-            card->Owner_Surname[strcspn(card->Owner_Surname, "\n")] = '\0';
-            /*scanf_s("%24s", card->Owner_Surname, (unsigned)_countof(card->Owner_Surname));*/
-        }
-
-        // PIN
-        //while (!ValidateNums(card->m_PIN, 4, 4))
-        //{
-        //    printf("Set card.PIN (4 digits): ");
-        //    scanf_s("%hu", (uint_fast16_t*)&card->m_PIN);
-        //    //Set_Pin();
-        //}
-
-        /*printf("Set card.PIN(Max 4 Digits): ");
-        scanf_s("%hu", (uint16_t*)&card->m_PIN);
-
-        printf("Set card.SCV(Max 3 Digits): ");
-        scanf_s("%hu", (uint16_t*)&card->m_SCV);*/
+        // Remove newline
+        input[strcspn(input, "\n")] = 0;
         
-    }
-}
-
-uint_fast16_t Account::Set_Pin()
-{
-    while (1) // Change this
-    {
-        char input[5];
-        printf("Set card.PIN (4 digits): ");
-        fgets(input, 5, stdin);
-
-        if (strlen(input) != 5)
+        // Check if input is exactly PIN_LENGTH digits
+        if (strlen(input) != PIN_LENGTH) 
         {
-            printf("Invalid PIN length. Please enter 4 digits.\n");
-            continue; // return to the top
+            printf("PIN must be exactly %d digits.\n", PIN_LENGTH);
+            continue;
         }
 
-        uint_fast32_t* temp{};
+        // Check if all characters are digits
+        bool valid = true;
+        for (int i = 0; i < PIN_LENGTH; i++) 
+        {
+            if (!isdigit(input[i])) 
+            {
+                valid = false;
+                break;
+            }
+        }
 
-        card->m_PIN = (uint_fast16_t)temp;
+        if (!valid)
+        {
+            printf("PIN must contain only digits.\n");
+            continue;
+        }
+
+        pin = static_cast<uint_fast16_t>(atoi(input));
+        return pin;
     }
 }
 
-bool Account::ValidateInput(char(&input)[25], uint_fast8_t maxLength, uint_fast8_t minLength)
+void Account::fn_set_Card_Names(char(&destination)[Constants::NAME_SIZE], const char* prompt) noexcept
 {
-    int length = strlen(input);
-    if (length <= maxLength && length >= minLength) 
+    do 
     {
-        return true; // Valid input
-    }
-    else 
-    {
-        //while (getchar() != '\n'); // No need for this because of fgets
-        //printf("%s%hhu%s%hhu%s\n", "Input must be at most ", maxLength, " characters long and at least ", minLength, " characters long, please try again.");
-        printf("Input must be at most %hhu characters long and at least %hhu characters long, please try again.\n", maxLength, minLength); // Revised version
+        printf("%s (3-24 characters): ", prompt);
+        if (fgets(destination, Constants::NAME_SIZE, stdin)) 
+        {
+            size_t len = strlen(destination);
+            if (len > 0 && destination[len-1] == '\n') 
+            {
+                destination[len-1] = '\0';
+                len--;
+            }
 
-        return false; // Invalid input
-    }
+            if (len > Constants::MAX_NAME_LENGTH) 
+            {
+                printf("Input is too long (maximum %d characters).\n", Constants::MAX_NAME_LENGTH);
+                continue;
+            }
+        }
+    } 
+    while (!fn_ValidateInput(destination, Constants::MAX_NAME_LENGTH, Constants::MIN_NAME_LENGTH));
 }
 
-bool Account::ValidateNums(uint_fast16_t& input, uint_fast16_t MaxSize, uint_fast16_t MinSize)
+void Account::fn_Show_Card_Details() const
 {
-    if (input >= MinSize && input <= MaxSize)
+    if (!card)
     {
-        return true; // Valid input
+        throw std::runtime_error("Card not initialized");
     }
-    else
-    {
-        //printf("Invalid PIN or SCV.  Must be between %hu and %hu.\n", MinSize, MaxSize);
-        printf("Invalid PIN or SCV. Must be between %hu and %hu.\n", MinSize, MaxSize); // Revised version
-        return false; // Invalid input
-    }
+
+    card->Show_Card_Details();
 }
 
-void Account::Show_Card_Details()
+// ------------------------- CHECKERS -------------------
+
+bool Account::fn_ValidateInput(char(&input)[Constants::NAME_SIZE], uint_fast8_t maxLength, uint_fast8_t minLength) const
 {
-    if (card != nullptr)
+    if (!input) 
     {
-        printf("\nCard_Owner_Name: %s\n", card->Owner_name);
-        printf("Card_Owner_Surname: %s\n", card->Owner_Surname);
-        printf("Card_number: %s\n", card->Card_number);
-        printf("Card_PIN: %hu\n", card->m_PIN);
-        printf("Card_SCV: %hu\n", card->m_SCV);
+        return false;
     }
+
+    size_t length = strlen(input);
+    
+    if (length < minLength || length > maxLength) 
+    {
+        printf("Input must be between %hhu and %hhu characters long.\n", minLength, maxLength);
+        return false;
+    }
+
+    for (size_t i = 0; i < length; i++) 
+    {
+        if (!isalpha(static_cast<unsigned char>(input[i]))) {
+            printf("Input must contain only letters.\n");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Account::fn_ValidateNums(uint_fast16_t& input, uint_fast16_t MaxSize, uint_fast16_t MinSize) const
+{
+    uint_fast16_t nums{0};
+    uint_fast16_t temp{input};  // Initialize from input
+
+    do 
+    {
+        nums++;
+        temp /= 10;
+    } 
+    while (temp > 0);
+
+    if (nums >= MinSize && nums <= MaxSize) 
+    {
+        return true;
+    }
+
+    printf("Number must be between %hu and %hu digits.\n", MinSize, MaxSize);
+    return false;
+}
+
+bool Account::fn_DB_Exist(const char(&DB)[Constants::MAX_DB_NAME]) const
+{
+    if (DB[0] == '\0') 
+    {
+        return false;
+    }
+    
+    try
+    {
+        std::ifstream file(DB);
+        bool exists = file.good();
+        file.close();
+        return exists;
+    }
+    catch(const std::exception& e)
+    {
+        printf("Error checking DB: %s\n", e.what());
+        return false;
+    }
+
 }
