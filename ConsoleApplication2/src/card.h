@@ -16,7 +16,7 @@ public:
     void Show_Card_Details() const noexcept;
 
 private:
-    char Card_number[Constants::CARD_NUMBER_SIZE]{};
+    char Card_number[Constants::CARD_NUMBER_LENGTH]{};
     char Owner_name[Constants::NAME_SIZE]{};
     char Owner_Surname[Constants::NAME_SIZE]{};
 

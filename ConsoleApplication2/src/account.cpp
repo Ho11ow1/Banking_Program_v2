@@ -44,7 +44,7 @@ uint_fast64_t Account::fn_Gen_Card_Number()
 {
     std::random_device rd;
     std::mt19937_64 mt(rd());
-    std::uniform_int_distribution<uint_fast64_t> dist(0, MAX_CARD_NUMBER);
+    std::uniform_int_distribution<uint_fast64_t> dist(0, Constants::MAX_CARD_NUMBER);
 
     return dist(mt);
 }
@@ -85,6 +85,9 @@ void Account::fn_Set_Card_Details()
 
     fn_Transfer_Card_Number();
 
+    fn_set_Card_Names(card->Owner_name, "Set card.Owner_Name");
+    fn_set_Card_Names(card->Owner_Surname, "Set card.Owner_Surname");
+
     // Set PIN
     card->m_PIN = fn_Set_Pin();
 
@@ -96,9 +99,6 @@ void Account::fn_Set_Card_Details()
         while (getchar() != '\n'); // Clear input buffer
     } 
     while (!fn_ValidateNums(card->m_SCV, 3, 3));
-
-    fn_set_Card_Names(card->Owner_name, "Set card.Owner_Name");
-    fn_set_Card_Names(card->Owner_Surname, "Set card.Owner_Surname");
 }
 
 uint_fast16_t Account::fn_Set_Pin()

@@ -22,17 +22,13 @@ public:
     void fn_Show_Card_Details() const;
 
 private:
-    static constexpr uint_fast16_t PIN_LENGTH = 4;
-    static constexpr uint_fast16_t SCV_LENGTH = 3;
-    static constexpr uint_fast64_t MAX_CARD_NUMBER = 9999999999999999;
-
     uint_fast64_t fn_Gen_Card_Number();
     std::string fn_Transfer_Card_Number();
-    // Setters
+    //=============== SETTERS ===============
     void fn_Set_Card_Details();
     uint_fast16_t fn_Set_Pin();
     void fn_set_Card_Names(char(&destination)[Constants::NAME_SIZE], const char* prompt) noexcept;
-    // Validation
+    //=============== VALIDATION ===============
     bool fn_ValidateInput(char(&input)[Constants::NAME_SIZE], uint_fast8_t maxLength, uint_fast8_t minLength) const;
     bool fn_ValidateNums(uint_fast16_t& input, uint_fast16_t MaxSize, uint_fast16_t MinSize) const;
     bool fn_DB_Exist(const char(&DB_NAME)[Constants::MAX_DB_NAME]) const;
