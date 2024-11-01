@@ -1,5 +1,7 @@
 #include <fstream>
 #include <sstream>
+#include <chrono>
+#include <ctime>
 
 #include "account.h"
 #include "card.h"  // Include Private Card Children
@@ -8,7 +10,6 @@ void Account::Run() noexcept
 {
     try 
     {
-        // Check if database exists
         if (!fn_DB_Exist(DB)) 
         { 
             printf("Warning: Database not found. Creating new database.\n");
@@ -19,6 +20,7 @@ void Account::Run() noexcept
         fn_Create_Account();
         fn_Set_Card_Details();
         fn_Show_Card_Details();
+        fn_Save_To_DB();
     }
     catch (const std::exception& e) 
     {
@@ -31,6 +33,7 @@ void Account::fn_Create_Account()
     try 
     {
         card = std::make_unique<Card>();
+        Account_ID = fn_Gen_Card_Number();
         printf("Created account\n\n");
     }
     catch (const std::bad_alloc& e) 
@@ -39,6 +42,8 @@ void Account::fn_Create_Account()
         throw;
     }
 }
+
+// ------------------------- CARD -------------------
 
 uint_fast64_t Account::fn_Gen_Card_Number()
 {
@@ -88,15 +93,13 @@ void Account::fn_Set_Card_Details()
     fn_set_Card_Names(card->Owner_name, "Set card.Owner_Name");
     fn_set_Card_Names(card->Owner_Surname, "Set card.Owner_Surname");
 
-    // Set PIN
     card->m_PIN = fn_Set_Pin();
 
-    // Set SCV
     do 
     {
         printf("Set card.SCV (3 digits): ");
         scanf_s("%u", &card->m_SCV);
-        while (getchar() != '\n'); // Clear input buffer
+        while (getchar() != '\n');
     } 
     while (!fn_ValidateNums(card->m_SCV, 3, 3));
 }
@@ -118,7 +121,6 @@ uint_fast16_t Account::fn_Set_Pin()
         // Remove newline
         input[strcspn(input, "\n")] = 0;
         
-        // Check if input is exactly PIN_LENGTH digits
         if (strlen(input) != PIN_LENGTH) 
         {
             printf("PIN must be exactly %d digits.\n", PIN_LENGTH);
@@ -181,7 +183,7 @@ void Account::fn_Show_Card_Details() const
     card->Show_Card_Details();
 }
 
-// ------------------------- CHECKERS -------------------
+// ------------------------- VALIDATION -------------------
 
 bool Account::fn_ValidateInput(char(&input)[Constants::NAME_SIZE], uint_fast8_t maxLength, uint_fast8_t minLength) const
 {
@@ -249,4 +251,64 @@ bool Account::fn_DB_Exist(const char(&DB)[Constants::MAX_DB_NAME]) const
         return false;
     }
 
+}
+
+// ------------------------- BALANCE -------------------
+
+bool Account::Deposit(double amount) noexcept
+{
+    return balance.Deposit(amount, Account_ID);
+}
+
+bool Account::Withdraw(double amount) noexcept
+{
+    return balance.Withdraw(amount, Account_ID);
+}
+
+double Account::Get_Balance() const noexcept
+{
+    return balance.Get_Balance(Account_ID);
+}
+
+// ------------------------- DB -------------------
+
+void Account::fn_Save_To_DB() const
+{
+    try 
+    {
+        std::ofstream file(DB, std::ios::app);
+        if (!file)
+        {
+            throw std::runtime_error("Could not open database file");
+        }
+
+        // Get current time
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        
+        char time_str[26];
+        ctime_s(time_str, sizeof(time_str), &time);
+        
+        file << "=====================\n";
+        file << "Account Created: " << time_str;
+        file << "Account ID: " << Account_ID << "\n";
+        
+        // Save non-sensitive data
+        file << "Owner Name: " << card->Owner_name << "\n";
+        file << "Owner Surname: " << card->Owner_Surname << "\n";
+        
+        // Save sensitive data
+        file << "Card Number: " << card->Card_number << "\n";
+        file << "PIN: [HIDDEN]\n";  // Don't save actual PIN
+        file << "SCV: [HIDDEN]\n";  // Don't save actual SCV
+        file << "Initial Balance: " << balance.GetCurrentBalance() << "\n";
+        file << "=====================\n\n";
+
+        file.close();
+    }
+    catch (const std::exception& e)
+    {
+        printf("Failed to save to database: %s\n", e.what());
+        throw;
+    }
 }
