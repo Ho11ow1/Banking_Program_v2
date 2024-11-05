@@ -10,7 +10,7 @@ void Banking::Run() noexcept
     try 
     {
         system("cls");
-        printf("Welcome to the banking app\n\n");
+        printf("Welcome to our banking app\n\n");
 
         printf("Would you like to login or create a new account?\n");
         printf("1. Login\n");
@@ -90,7 +90,7 @@ void Banking::Run() noexcept
                 break;
 
                 case 5: 
-                    printf("Thank you for using this app...\n");
+                    printf("Thank you for using our app...\n");
                     running = false; 
                 break;
 
