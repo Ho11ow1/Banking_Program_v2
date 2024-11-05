@@ -119,7 +119,8 @@ bool Account::fn_Login()
         // Search for matching account
         while (std::getline(file, line)) 
         {
-            if (line.find("=====================") != std::string::npos) {
+            if (line.find("=====================") != std::string::npos) 
+            {
                 account_block_start = file.tellg();
                 in_account_block = true;
                 continue;
@@ -161,16 +162,20 @@ bool Account::fn_Login()
                                 break;
                             }
                             
-                            if (line.find("Owner Name: ") != std::string::npos) {
+                            if (line.find("Owner Name: ") != std::string::npos) 
+                            {
                                 strncpy_s(card->Owner_name, line.substr(11).c_str(), sizeof(card->Owner_name) - 1);
                             }
-                            else if (line.find("Owner Surname: ") != std::string::npos) {
+                            else if (line.find("Owner Surname: ") != std::string::npos) 
+                            {
                                 strncpy_s(card->Owner_Surname, line.substr(14).c_str(), sizeof(card->Owner_Surname) - 1);
                             }
-                            else if (line.find("PIN: ") != std::string::npos) {
+                            else if (line.find("PIN: ") != std::string::npos) 
+                            {
                                 card->m_PIN = (uint_fast16_t)(std::stoi(line.substr(5)));
                             }
-                            else if (line.find("SCV: ") != std::string::npos) {
+                            else if (line.find("SCV: ") != std::string::npos) 
+                            {
                                 card->m_SCV = (uint_fast16_t)(std::stoi(line.substr(5)));
                             }
                         }
@@ -179,7 +184,8 @@ bool Account::fn_Login()
                 }
             }
 
-            if (line.empty()) {
+            if (line.empty()) 
+            {
                 in_account_block = false;
             }
         }
@@ -338,7 +344,6 @@ void Account::fn_set_Card_Names(char(&destination)[Constants::NAME_SIZE], const 
 
 void Account::fn_Show_Card_Details()
 {
-    system("cls");
     card->Show_Card_Details();
 }
 
@@ -361,7 +366,8 @@ bool Account::fn_ValidateInput(char(&input)[Constants::NAME_SIZE], uint_fast8_t 
 
     for (size_t i = 0; i < length; i++) 
     {
-        if (!isalpha((char)(input[i]))) {
+        if (!isalpha((char)(input[i]))) 
+        {
             printf("Input must contain only letters.\n");
             return false;
         }

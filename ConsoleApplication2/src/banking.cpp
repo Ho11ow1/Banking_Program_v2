@@ -17,26 +17,18 @@ void Banking::Run() noexcept
         printf("2. Create Account\n");
         
         printf("Choose option: ");
-        if(scanf_s("%d", &choice) != 1)
-        {
-            system("cls");
-            printf("Invalid input\n");
-            while (getchar() != '\n');
-            return;
-        }
-        while (getchar() != '\n');
+        scanf_s("%d", &choice);
 
         switch (choice)
         {
             case 1:
                 system("cls");
-                logged_in = acc.fn_Login();
-                if (!logged_in) { return; }
+                if (acc.fn_Login()) { logged_in = true; }
             break;
 
             case 2:
                 system("cls");
-                acc.fn_Create_Account();
+                acc.Run();
                 logged_in = true;
             break;
 
@@ -49,7 +41,6 @@ void Banking::Run() noexcept
 
         while (running && logged_in)
         {
-            system("cls");
             printf("\n=== Banking Menu ===\n");
             printf("1. Show Card Details\n");
             printf("2. Deposit\n");
@@ -61,27 +52,24 @@ void Banking::Run() noexcept
 
             if (scanf_s("%d", &choice) != 1)
             {
-                system("cls");
                 printf("Invalid input\n");
                 while (getchar() != '\n');
                 continue;
             }
             while (getchar() != '\n');
+            system("cls");
 
             switch (choice)
             {
                 case 1: 
-                    system("cls");
                     acc.fn_Show_Card_Details(); 
                 break;
 
                 case 2: 
-                    system("cls");
                     fn_Handle_Balance("deposit", [this](double amt) { return acc.Deposit(amt); });
                 break;
 
                 case 3:
-                    system("cls");
                     fn_Handle_Balance("withdraw", [this](double amt) { return acc.Withdraw(amt); });
                 break;
 
