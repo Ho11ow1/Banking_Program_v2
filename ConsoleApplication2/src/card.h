@@ -1,10 +1,7 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <cstdio>
 #include <cstdint>
-#include <cstring>
-
 #include "constants.h"
 
 class Card
