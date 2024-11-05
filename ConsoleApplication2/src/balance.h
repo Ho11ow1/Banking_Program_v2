@@ -2,7 +2,6 @@
 #define BALANCE_H
 
 #include <cstdint>
-#include <cstdio>
 
 class Balance 
 {
@@ -22,9 +21,14 @@ private:
 
     static constexpr double MAX_TRANSACTION = 1000000.0;
 
-    bool ValidateAmount(double amount) const noexcept
+    inline constexpr bool ValidateAmount(double amount) noexcept
     {
         return amount > 0.0 && amount <= MAX_TRANSACTION;
+    }
+
+    inline bool validateAccountId(uint_fast64_t account_id) const noexcept
+    {
+        return (m_Account_ID == 0 || m_Account_ID == account_id);
     }
 };
 

@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <exception>
+#include <cstdlib>
+#include <cctype>
 
 #include "banking.h"
 
@@ -7,21 +9,61 @@ void Banking::Run() noexcept
 {
     try 
     {
-        acc.Run();
+        system("cls");
+        printf("Welcome to the banking app\n\n");
 
-        while (running)
+        printf("Would you like to login or create a new account?\n");
+        printf("1. Login\n");
+        printf("2. Create Account\n");
+        
+        printf("Choose option: ");
+        if(scanf_s("%d", &choice) != 1)
         {
-            printf("\n1. Show Card Details\n");
+            system("cls");
+            printf("Invalid input\n");
+            while (getchar() != '\n');
+            return;
+        }
+        while (getchar() != '\n');
+
+        switch (choice)
+        {
+            case 1:
+                system("cls");
+                logged_in = acc.fn_Login();
+                if (!logged_in) { return; }
+            break;
+
+            case 2:
+                system("cls");
+                acc.fn_Create_Account();
+                logged_in = true;
+            break;
+
+            default:
+                system("cls");
+                printf("Invalid option\n");
+                return;
+            break;
+        }
+
+        while (running && logged_in)
+        {
+            system("cls");
+            printf("\n=== Banking Menu ===\n");
+            printf("1. Show Card Details\n");
             printf("2. Deposit\n");
             printf("3. Withdraw\n");
             printf("4. Check Balance\n");
             printf("5. Exit\n");
+            printf("==================\n");
             printf("Choose option: ");
 
             if (scanf_s("%d", &choice) != 1)
             {
-                while (getchar() != '\n');
+                system("cls");
                 printf("Invalid input\n");
+                while (getchar() != '\n');
                 continue;
             }
             while (getchar() != '\n');
@@ -29,35 +71,18 @@ void Banking::Run() noexcept
             switch (choice)
             {
                 case 1: 
+                    system("cls");
                     acc.fn_Show_Card_Details(); 
                 break;
 
                 case 2: 
-                    printf("Enter amount to deposit: ");
-                    if (scanf_s("%lf", &amount) == 1)
-                    {
-                        acc.Deposit(amount);
-                        while (getchar() != '\n');
-                    }
-                    else
-                    {
-                        printf("Invalid amount\n");
-                        while (getchar() != '\n');
-                    }
+                    system("cls");
+                    fn_Handle_Balance("deposit", [this](double amt) { return acc.Deposit(amt); });
                 break;
 
                 case 3:
-                    printf("Enter amount to withdraw: ");
-                    if (scanf_s("%lf", &amount) == 1)
-                    {
-                        acc.Withdraw(amount);
-                        while (getchar() != '\n');
-                    }
-                    else
-                    {
-                        printf("Invalid amount\n");
-                        while (getchar() != '\n');
-                    }
+                    system("cls");
+                    fn_Handle_Balance("withdraw", [this](double amt) { return acc.Withdraw(amt); });
                 break;
 
                 case 4:
@@ -78,5 +103,22 @@ void Banking::Run() noexcept
     catch (const std::exception& e) 
     {
         printf("Error: %s\n", e.what());
+    }
+} 
+
+template<typename Func>
+void Banking::fn_Handle_Balance(const char* prompt, Func&& operation) 
+{
+    printf("Enter amount to %s: ", prompt);
+
+    if (scanf_s("%lf", &amount) == 1) 
+    {
+        operation(amount);
+        while (getchar() != '\n');
+    } 
+    else 
+    {
+        printf("Invalid amount\n");
+        while (getchar() != '\n');
     }
 } 

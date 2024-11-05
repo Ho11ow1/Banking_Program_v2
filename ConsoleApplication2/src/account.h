@@ -2,10 +2,8 @@
 #define ACCOUNT_H
 
 #include <memory>
-#include <random>
-#include <stdexcept>
-#include <chrono>
-#include <ctime>
+#include <string>
+#include <cstdint>
 
 #include "constants.h"
 #include "card.h"
@@ -19,7 +17,8 @@ public:
 
     void Run() noexcept;
     void fn_Create_Account();
-    void fn_Show_Card_Details() const;
+    bool fn_Login();
+    void fn_Show_Card_Details();
     //=============== BALANCE ===============
     bool Deposit(double amount) noexcept;
     bool Withdraw(double amount) noexcept;
