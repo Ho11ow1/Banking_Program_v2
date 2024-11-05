@@ -1,31 +1,29 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include <string>
+#include <cstdio>
+#include <cstdint>
+#include <cstring>
 
-class Card 
+#include "constants.h"
+
+class Card
 {
 public:
-    Card() : Card_Number(GenNumber()), Card_Balance(0) {};
+    Card() noexcept = default;
+    ~Card() noexcept = default;
 
-    Card(Card&& old) noexcept :
-        Card_Number(std::move(old.Card_Number)),
-        Card_Balance(std::move(old.Card_Balance)) {}
-
-    std::string GetCardNumber() const { return Card_Number; };
-
-public:
-    std::string Card_Number;
-    uint64_t Card_Balance;
+    void Show_Card_Details() const noexcept;
 
 private:
-    uint64_t m_MIN = 1000000000000000;
-    uint64_t m_MAX = 9999999999999999;
+    char Card_number[Constants::CARD_NUMBER_LENGTH]{};
+    char Owner_name[Constants::NAME_SIZE]{};
+    char Owner_Surname[Constants::NAME_SIZE]{};
 
-private:
-    std::string GenNumber();
-    void DB_Create();
-    std::string B2 = "2B.txt";
+    uint_fast16_t m_PIN{};
+    uint_fast16_t m_SCV{};
+
+    friend class Account;
 };
 
 #endif
