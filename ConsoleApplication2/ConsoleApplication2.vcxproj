@@ -139,6 +139,7 @@
     <ClCompile Include="src\banking.cpp" />
     <ClCompile Include="src\card.cpp" />
     <ClCompile Include="src\database.cpp" />
+    <ClCompile Include="src\util\validation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\account.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="src\card.h" />
     <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\database.h" />
+    <ClInclude Include="src\util\validation.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="2B.txt" />
