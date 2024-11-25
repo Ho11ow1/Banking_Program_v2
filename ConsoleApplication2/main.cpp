@@ -5,15 +5,7 @@
 
 int main()
 {
-    try 
-    {
-        Banking bank;
-        bank.Run();
-        return 0;
-    }
-    catch (const std::exception& e) 
-    {
-        printf("Fatal error: %s\n", e.what());
-        return 1;
-    }
+    Banking bank;
+    bank.Run();
+    return 0;
 }

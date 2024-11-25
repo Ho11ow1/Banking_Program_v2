@@ -6,7 +6,6 @@
 
 namespace Constants 
 {
-    inline constexpr size_t NAME_SIZE = 25;
     inline constexpr uint_fast8_t MAX_NAME_LENGTH = 24;
     inline constexpr uint_fast8_t MIN_NAME_LENGTH = 3;
 
@@ -16,7 +15,7 @@ namespace Constants
     inline constexpr uint_fast16_t CARD_NUMBER_LENGTH = 20;
     inline constexpr uint_fast64_t MAX_CARD_NUMBER = 9999999999999999;
 
-    inline constexpr uint_fast8_t MAX_DB_NAME = 24;
+    inline constexpr char DB_NAME[6] = "2B.db";
 }
 
 #endif 
