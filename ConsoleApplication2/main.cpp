@@ -5,7 +5,6 @@
 
 int main()
 {
-    // Test SQLite version
     printf("SQLite version: %s\n", sqlite3_libversion());
     
     // Banking bank;
