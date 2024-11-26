@@ -19,7 +19,6 @@ std::string Validation::GetValidInput(std::string prompt)
     return str;
 }
 
-
 bool Validation::ValidateInput(std::string input, uint_fast8_t minLength, uint_fast8_t maxLength)
 {
     if (input.empty())
@@ -49,6 +48,44 @@ bool Validation::IsValid(std::string input)
         {
             return false;
         }
+    }
+
+    return true;
+}
+
+uint_fast8_t Validation::GetValidPIN(std::string prompt)
+{
+    uint_fast8_t temp;
+
+    do
+    {
+        printf("%s (%hhu numbers): ", prompt.c_str(), Constants::PIN_LENGTH);
+        scanf_s("%hhu", &temp);
+    } 
+    while (!ValidateNums(temp, Constants::PIN_LENGTH));
+
+    return temp;
+}
+
+uint_fast8_t Validation::GetValidSCV(std::string prompt)
+{
+    uint_fast8_t temp;
+
+    do
+    {
+        printf("%s (%hhu numbers): ", prompt.c_str(), Constants::SCV_LENGTH);
+        scanf_s("%hhu", &temp);
+    } 
+    while (!ValidateNums(temp, Constants::SCV_LENGTH));
+
+    return temp;
+}
+
+bool Validation::ValidateNums(uint_fast8_t num, uint_fast8_t length)
+{
+    //if ()
+    {
+        // return false;
     }
 
     return true;

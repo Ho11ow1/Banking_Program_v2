@@ -5,8 +5,7 @@
 
 #include <string>
 #include "./constants.h"
-
-class Card;  // Forward declaration
+#include "./card.h"
 
 class Account
 {
@@ -15,15 +14,15 @@ public:
 
     bool Register();
     bool Login();
-    void ShowDetails(Account &account, Card &card);
+    void ShowDetails(Account& account, Card& card) noexcept;
 
 private:
-    uint_fast64_t GenerateNumber();
+    Card card;
 
-private:
-    uint_fast64_t accountNumber{};
     std::string accountHolder{};
+    uint_fast64_t accountNumber{};
     uint_fast64_t routingNumber{};
+    uint_fast32_t accountBalance{0};
 };
 
 #endif

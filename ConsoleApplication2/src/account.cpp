@@ -2,53 +2,58 @@
 #include <random>
 
 #include "./account.h"
-#include "./card.h"
 #include "./util/validation.h"
+#include "util/generation.h"
 Validation validation;
 
 bool Account::Register()
 {
-    accountNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
-    strcpy_s(accountHolder, sizeof(accountHolder), validation.ValidateInput(accountHolder, sizeof(accountHolder)));
-    routingNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
-accountBalance = init with 0; // Set same on card as a ref for ease of use
+    try
+    {
+        accountHolder = validation.GetValidInput("Input Account Name + Surname");
+        accountNumber = GenerateNumber(); // leave as a creative decision
+        routingNumber = GenerateNumber(); // leave as a creative decision
 
+        card.SetDetails();
+    }
+    catch (std::exception& e)
+    {
+        printf("%s", e.what());
+        return false;
+    }
 
     return true;
 }
 
 bool Account::Login()
 {
-unit tempnumber;
-string tempaccountholder;
-uint temp routing;
+    uint_fast64_t tempNumber{};
+    std::string tempAccountHolder{};
+    uint_fast64_t tempRouting{};
 
-if temp == Get from DB { true; }
     // TODO: Implement Login
 
-    return true;
+    if (tempNumber == accountNumber && tempAccountHolder == accountHolder && tempRouting == routingNumber)
+    {
+        return true;
+    }
+
+    return false;
 }
 
-void Account::ShowDetails(Account &account, Card &card)
+void Account::ShowDetails(Account &account, Card &card) noexcept
 {
+    printf("Account Holder: %s", account.accountHolder.c_str()); // I gues c_str() adds a '\n' at the end
     printf("Account Number: %lld\n", account.accountNumber);
-    printf("Account Holder: %s\n", account.accountHolder.c_str());
     printf("Routing Number: %lld\n", account.routingNumber);
+    printf("Account Balance: %d\n", account.accountBalance);
     
     if (&card != nullptr)
     {
         printf("Card Details:\n");
-        printf("  PIN: %d\n", card.PIN);
-        printf("  SCV: %d\n", card.SCV);
-        printf("  Balance: $%.2f\n", card.balance);
+        printf("  Card Number: %lld\n", card.GetCardNumber());
+        printf("  PIN: %d\n", card.GetPIN());
+        printf("  SCV: %d\n", card.GetSCV());
+        printf("  Balance: $%.2f\n", card.GetBalance());
     }
-}
-
-uint_fast64_t Account::GenerateNumber() // Creative Decisions
-{
-    std::random_device rd;
-    std::mt19937_64 gen(rd());
-    std::uniform_int_distribution<uint_fast64_t> dis(0ULL, Constants::MAX_CARD_NUMBER);
-
-    return dis(gen);
 }

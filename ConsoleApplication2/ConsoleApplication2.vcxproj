@@ -139,6 +139,8 @@
     <ClCompile Include="src\banking.cpp" />
     <ClCompile Include="src\card.cpp" />
     <ClCompile Include="src\database.cpp" />
+    <ClCompile Include="src\util\generation.cpp" />
+    <ClCompile Include="src\util\generation.h" />
     <ClCompile Include="src\util\validation.cpp" />
   </ItemGroup>
   <ItemGroup>
