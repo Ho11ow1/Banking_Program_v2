@@ -9,15 +9,21 @@ Validation validation;
 bool Account::Register()
 {
     accountNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
-    accountHolder = validation.GetValidInput("Input accountHolder name");
+    strcpy_s(accountHolder, sizeof(accountHolder), validation.ValidateInput(accountHolder, sizeof(accountHolder)));
     routingNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
+accountBalance = init with 0; // Set same on card as a ref for ease of use
 
-    // Save all this to SQLite
+
     return true;
 }
 
 bool Account::Login()
 {
+unit tempnumber;
+string tempaccountholder;
+uint temp routing;
+
+if temp == Get from DB { true; }
     // TODO: Implement Login
 
     return true;
