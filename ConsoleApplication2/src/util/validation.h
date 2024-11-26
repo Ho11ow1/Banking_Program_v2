@@ -1,11 +1,14 @@
 #pragma once
-#include <cstdint>
+
+#include <cstdio>
+#include <string>
+#include "../constants.h"
 
 class Validation
 {
 public:
-    char* ValidateInput(const char* input, size_t buffer);
+    std::string GetValidInput(std::string prompt);
 private:
-    char* GetValidInput(const char* input, uint_fast8_t minLength, uint_fast8_t maxLength);
-    bool IsValid(const char* input);
+    bool ValidateInput(std::string input, uint_fast8_t minLength, uint_fast8_t maxLength);
+    bool IsValid(std::string input);
 };

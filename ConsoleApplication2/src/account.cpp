@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <cstring>
 #include <random>
 
 #include "./account.h"
@@ -10,9 +9,10 @@ Validation validation;
 bool Account::Register()
 {
     accountNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
-    strcpy_s(accountHolder, sizeof(accountHolder), validation.ValidateInput(accountHolder, sizeof(accountHolder)));
+    accountHolder = validation.GetValidInput("Input accountHolder name");
     routingNumber = GenerateNumber(); // Can change this into SQLite AUTOINCREMENT or leave as a creative decision
 
+    // Save all this to SQLite
     return true;
 }
 
@@ -26,23 +26,23 @@ bool Account::Login()
 void Account::ShowDetails(Account &account, Card &card)
 {
     printf("Account Number: %lld\n", account.accountNumber);
+    printf("Account Holder: %s\n", account.accountHolder.c_str());
+    printf("Routing Number: %lld\n", account.routingNumber);
+    
     if (&card != nullptr)
     {
-        printf("PIN: %d\n", card.PIN);
-        printf("SCV: %d\n", card.SCV);
-        printf("Balance: %.2f\n", card.balance);
+        printf("Card Details:\n");
+        printf("  PIN: %d\n", card.PIN);
+        printf("  SCV: %d\n", card.SCV);
+        printf("  Balance: $%.2f\n", card.balance);
     }
-    printf("Account Holder: %s\n", account.accountHolder);
-    printf("Routing Number: %lld\n", account.routingNumber);
 }
 
-uint_fast64_t Account::GenerateNumber()
+uint_fast64_t Account::GenerateNumber() // Creative Decisions
 {
-    uint_fast64_t num{};
-
     std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, Constants::MAX_CARD_NUMBER);
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint_fast64_t> dis(0ULL, Constants::MAX_CARD_NUMBER);
 
-    return (uint_fast64_t)dis(gen);
+    return dis(gen);
 }

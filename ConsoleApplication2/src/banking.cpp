@@ -5,10 +5,18 @@
 
 void Banking::Run() noexcept
 {
-    // if (!_DB.DBExists())
-    // {
-    //     _DB.CreateDB();
-    // }
+    if (!DB.DBExists())
+    {
+        printf("Database doesn't exists, Creating Database");
+        try
+        {
+            DB.CreateDB();
+        }
+        catch (const std::exception& e)
+        {
+            printf("%s\n", e.what());
+        }
+    }
     try
     {
         while (isRunning)
@@ -58,7 +66,6 @@ void Banking::Run() noexcept
             }
             while (isRunning && isLoggedIn)
             {
-                system("cls");
                 printf("\n=== Banking Menu ===\n");
                 printf("1. Show Card Details\n");
                 printf("2. Deposit\n");
@@ -92,6 +99,7 @@ void Banking::Run() noexcept
                         // TODO: Implement Withdraw
                     break;
                     case 4:
+                        system("cls");
                         // TODO: Implement Check Balance
                     break;
                     case 5:

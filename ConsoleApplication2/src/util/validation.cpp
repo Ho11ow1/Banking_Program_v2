@@ -3,27 +3,53 @@
 #include "./validation.h"
 #include "../constants.h"
 
-char* Validation::ValidateInput(const char* input, size_t buffer)
+std::string Validation::GetValidInput(std::string prompt)
 {
-    return GetValidInput(input, Constants::MIN_NAME_LENGTH, Constants::MAX_NAME_LENGTH);
+    std::string str;
+    do
+    {
+        printf("%s (%hhd-%hhd characters): ", prompt.c_str(), Constants::MIN_NAME_LENGTH, Constants::MAX_NAME_LENGTH);
+
+        char buffer[Constants::MAX_NAME_LENGTH + 1];
+        fgets(buffer, Constants::MAX_NAME_LENGTH + 1, stdin);
+        str = buffer;
+    } 
+    while (!ValidateInput(str, Constants::MIN_NAME_LENGTH, Constants::MAX_NAME_LENGTH));
+
+    return str;
 }
 
 
-char* Validation::GetValidInput(const char* input, uint_fast8_t minLength, uint_fast8_t maxLength)
+bool Validation::ValidateInput(std::string input, uint_fast8_t minLength, uint_fast8_t maxLength)
 {
-    if (input == nullptr)
+    if (input.empty())
     {
-        return nullptr;
+        printf("Input cannot be empty.\n");
+        return false;
     }
-    if (strlen(input) < minLength || strlen(input) > maxLength)
+    if (!IsValid(input))
     {
-        return nullptr;
+        printf("Input must contain only letters and spaces.\n");
+        return false;
+    }
+    if (input.length() < minLength || input.length() > maxLength)
+    {
+        printf("Input must be between %hhu and %hhu characters long.\n", minLength, maxLength);
+        return false;
     }
 
-    return (char*)input;
+    return true;
 }
 
-bool Validation::IsValid(const char* input)
+bool Validation::IsValid(std::string input)
 {
+    for (int i = 0; i < input.length(); i++)
+    {
+        if (!isalpha(input[i]) && !isspace(input[i]))
+        {
+            return false;
+        }
+    }
+
     return true;
 }

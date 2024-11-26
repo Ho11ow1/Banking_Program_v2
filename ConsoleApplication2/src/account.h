@@ -3,6 +3,7 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
+#include <string>
 #include "./constants.h"
 
 class Card;  // Forward declaration
@@ -10,6 +11,8 @@ class Card;  // Forward declaration
 class Account
 {
 public:
+    Account() = default;
+
     bool Register();
     bool Login();
     void ShowDetails(Account &account, Card &card);
@@ -18,9 +21,9 @@ private:
     uint_fast64_t GenerateNumber();
 
 private:
-    uint_fast64_t accountNumber;
-    char accountHolder[Constants::MAX_NAME_LENGTH];
-    uint_fast64_t routingNumber;
+    uint_fast64_t accountNumber{};
+    std::string accountHolder{};
+    uint_fast64_t routingNumber{};
 };
 
 #endif
