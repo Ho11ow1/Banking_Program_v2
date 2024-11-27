@@ -34,7 +34,7 @@ double Card::GetBalance() const
 	return balance;
 }
 
-void Card::UpdateBalance(double amount) noexcept
+void Card::UpdateBalance(double amount) noexcept // turn this into a helper function to handle both deposit and withdraw
 {
-	balance = amount;
+	balance += amount;
 }

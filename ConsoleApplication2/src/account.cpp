@@ -24,6 +24,8 @@ bool Account::Register()
         return false;
     }
 
+    // Add SQLite update records
+
     return true;
 }
 
@@ -37,7 +39,7 @@ bool Account::Login()
 
     if (tempNumber == accountNumber && tempAccountHolder == accountHolder && tempRouting == routingNumber)
     {
-        return true;
+        return true; // Call from records
     }
 
     return false;
@@ -60,7 +62,7 @@ void Account::ShowDetails() noexcept
     }
 }
 
-void Account::UpdateBalance() noexcept
+void Account::UpdateBalance() noexcept // Turn this into a helper function to handle both withdraw and deposit
 {
     int temp{};
 

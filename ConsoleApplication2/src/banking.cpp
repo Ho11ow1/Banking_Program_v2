@@ -93,11 +93,11 @@ void Banking::Run() noexcept
                     break;
                     case 2:
                         system("cls");
-                        account.UpdateBalance();
+                        account.UpdateBalance(); // Deposit
                     break;
                     case 3:
                         system("cls");
-                        // TODO: Implement Withdraw
+                        account.UpdateBalance(); // Withdraw
                     break;
                     case 4:
                         system("cls");
