@@ -14,10 +14,11 @@ A simple yet effective banking program in ```C++```
 # Installation Guide
 
 ## Prerequisites
+- Visual Studio 2022 (recommended)
+- G++ compiler installed (optional)
 - Git installed
-- G++ compiler installed
 - SQLite3 installed
-- Command line terminal (Command Prompt, PowerShell, or Terminal)
+- PowerShell
 
 ## Installation Steps
 
@@ -25,16 +26,38 @@ A simple yet effective banking program in ```C++```
 ```bash
 git clone https://github.com/Ho11ow1/Banking_Program_v2
 ```
+
 ### 2. Navigate to project directory
+```bash
+cd Banking_Program_v2
+```
+
+### 3. Run the Setup Script
+```powershell
+# Open PowerShell as Administrator and run:
+.\setup-sqlite.ps1
+```
+
+### Main Method: Using Visual Studio (Recommended)
+
+1. Open `ConsoleApplication2.sln` in Visual Studio
+2. Select your preferred build configuration (Debug/Release) and platform (x64/x86)
+3. Build the solution (Ctrl + Shift + B)
+4. Run the program (Ctrl + F5)
+
+### Alternative Method: Using g++ Compiler
+
+1. Navigate to the project directory:
 ```bash
 cd Banking_Program_v2/ConsoleApplication2
 ```
-### 3. Compile the program
+
+2. Compile the program:
 ```bash
-# Compile using * for all cpp files and -I for all includes, linking SQLite
-g++ main.cpp src/*cpp -I./src -I./sqlite/include -L./sqlite/lib -lsqlite3 -o Bank
+g++ main.cpp src/*.cpp src/util/*.cpp -I./src -I./sqlite/include -L./sqlite/lib -lsqlite3 -o Bank
 ```
-### 4. Run the program
+
+3. Run the program:
 ```bash
 ./Bank
 ```
@@ -44,7 +67,10 @@ g++ main.cpp src/*cpp -I./src -I./sqlite/include -L./sqlite/lib -lsqlite3 -o Ban
 If you encounter errors:
 
 - Make sure you're in the correct directory
-- Verify G++ is installed: `g++ --version`
-- Check if all source files exist: `dir src\*.cpp`
+- Verify Visual Studio 2022 has `C++` installed (only if using Visual Studio method)
+- Verify G++ compiler is properly installed (only if using alternative method)
 - Ensure SQLite files are present in sqlite/include and sqlite/lib
-- For Windows users, both `./Bank` and `.\Bank` will work
+- For PowerShell script execution issues:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
