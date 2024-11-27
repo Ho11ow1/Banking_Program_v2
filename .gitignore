@@ -18,3 +18,7 @@ x86/
 *.pdb
 *.ilk
 *.log
+
+# SQLite files
+ConsoleApplication2/sqlite/
+*.db

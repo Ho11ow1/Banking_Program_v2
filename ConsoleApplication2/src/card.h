@@ -10,14 +10,14 @@ public:
 
     void SetDetails();
     uint_fast64_t GetCardNumber() const;
-    uint_fast8_t GetPIN() const;
-    uint_fast8_t GetSCV() const;
+    uint_fast16_t GetPIN() const;
+    uint_fast16_t GetSCV() const;
     double GetBalance() const;
-
+    void UpdateBalance(double amount) noexcept;
 private:
     uint_fast64_t cardNumber{};
-    uint_fast8_t PIN{};
-    uint_fast8_t SCV{};
+    uint_fast16_t PIN{};
+    uint_fast16_t SCV{};
     double balance{};
 };
 

@@ -14,7 +14,8 @@ public:
 
     bool Register();
     bool Login();
-    void ShowDetails(Account& account, Card& card) noexcept;
+    void ShowDetails() noexcept;
+    void UpdateBalance() noexcept;
 
 private:
     Card card;
@@ -22,7 +23,7 @@ private:
     std::string accountHolder{};
     uint_fast64_t accountNumber{};
     uint_fast64_t routingNumber{};
-    uint_fast32_t accountBalance{0};
+    double accountBalance = 0;
 };
 
 #endif

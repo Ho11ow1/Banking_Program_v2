@@ -7,7 +7,7 @@ void Banking::Run() noexcept
 {
     if (!DB.DBExists())
     {
-        printf("Database doesn't exists, Creating Database");
+        printf("Database doesn't exist, Creating new database\n\n");
         try
         {
             DB.CreateDB();
@@ -31,7 +31,7 @@ void Banking::Run() noexcept
                 printf("3. Exit Program\n");
 
                 printf("Choose option: ");
-                if (scanf_s("%hhd", &choice) != 1)
+                if (scanf_s("%hhu", &choice) != 1)
                 {
                     system("cls");
                     printf("Invalid input\n");
@@ -67,11 +67,12 @@ void Banking::Run() noexcept
             while (isRunning && isLoggedIn)
             {
                 printf("\n=== Banking Menu ===\n");
-                printf("1. Show Card Details\n");
+                printf("1. Show Account Details\n");
                 printf("2. Deposit\n");
                 printf("3. Withdraw\n");
                 printf("4. Check Balance\n");
-                printf("5. Exit\n");
+                printf("5. Log out\n");
+                printf("6. Exit\n");
                 printf("==================\n");
                 printf("Choose option: ");
 
@@ -88,11 +89,11 @@ void Banking::Run() noexcept
                 {
                     case 1:
                         system("cls");
-                        account.ShowDetails(account, card);
+                        account.ShowDetails();
                     break;
                     case 2:
                         system("cls");
-                        // TODO: Implement Deposit
+                        account.UpdateBalance();
                     break;
                     case 3:
                         system("cls");
@@ -103,6 +104,10 @@ void Banking::Run() noexcept
                         // TODO: Implement Check Balance
                     break;
                     case 5:
+                        system("cls");
+                        isLoggedIn = false;
+                    break;
+                    case 6:
                         printf("Thank you for using this app...\n");
                         isRunning = false;
                     break;

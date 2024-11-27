@@ -53,39 +53,64 @@ bool Validation::IsValid(std::string input)
     return true;
 }
 
-uint_fast8_t Validation::GetValidPIN(std::string prompt)
+uint_fast16_t Validation::GetValidPIN(std::string prompt)
 {
-    uint_fast8_t temp;
+    uint_fast16_t temp{};
 
     do
     {
         printf("%s (%hhu numbers): ", prompt.c_str(), Constants::PIN_LENGTH);
-        scanf_s("%hhu", &temp);
+        if (scanf_s("%hu", &temp) != 1)
+        {
+            printf("Invalid input\n");
+            while (getchar() != '\n');
+            continue;
+        }
+        while (getchar() != '\n');
     } 
     while (!ValidateNums(temp, Constants::PIN_LENGTH));
 
     return temp;
 }
 
-uint_fast8_t Validation::GetValidSCV(std::string prompt)
+uint_fast16_t Validation::GetValidSCV(std::string prompt)
 {
-    uint_fast8_t temp;
+    uint_fast16_t temp{};
 
     do
     {
         printf("%s (%hhu numbers): ", prompt.c_str(), Constants::SCV_LENGTH);
-        scanf_s("%hhu", &temp);
-    } 
+        if (scanf_s("%hu", &temp) != 1)
+        {
+            printf("Invalid input\n");
+            while (getchar() != '\n');
+            continue;
+        }
+        while (getchar() != '\n');
+    }
     while (!ValidateNums(temp, Constants::SCV_LENGTH));
 
     return temp;
 }
 
-bool Validation::ValidateNums(uint_fast8_t num, uint_fast8_t length)
+bool Validation::ValidateNums(uint_fast16_t num, uint_fast8_t length)
 {
-    //if ()
+    uint_fast8_t count = 0;
+
+    if (num == 0)
     {
-        // return false;
+        count = 1;
+    }
+    while (num > 0)
+    {
+        num /= 10;
+        count++;
+    }
+
+    if (count != length)
+    {
+        printf("Input must be exactly %hhu digits long.\n", length);
+        return false;
     }
 
     return true;

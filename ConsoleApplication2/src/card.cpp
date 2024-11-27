@@ -19,12 +19,12 @@ uint_fast64_t Card::GetCardNumber() const
 	return cardNumber;
 }
 
-uint_fast8_t Card::GetPIN() const
+uint_fast16_t Card::GetPIN() const
 {
 	return PIN;
 }
 
-uint_fast8_t Card::GetSCV() const
+uint_fast16_t Card::GetSCV() const
 {
 	return SCV;
 }
@@ -34,3 +34,7 @@ double Card::GetBalance() const
 	return balance;
 }
 
+void Card::UpdateBalance(double amount) noexcept
+{
+	balance = amount;
+}

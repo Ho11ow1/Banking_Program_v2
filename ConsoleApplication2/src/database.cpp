@@ -4,25 +4,19 @@
 
 bool Database::DBExists()
 {
-    if (sqlite3_open(Constants::DB_NAME, &db) != SQLITE_OK)
-    {
-        sqlite3_close(db);
-        return false;
-    }
-
-    sqlite3_close(db);
-    return true;
+    std::ifstream file(Constants::DB_NAME);
+    return file.good();;
 }
 
  bool Database::CreateDB()
  {
-     std::ofstream file(Constants::DB_NAME);
-     if (!file.is_open())
-     {
-         printf("Error creating database\n");
-         return false;
-     }
+    std::ofstream file(Constants::DB_NAME);
+    if (!file.is_open())
+    {
+        printf("Error creating database\n");
+        return false;
+    }
 
-     file.close();
-     return true;
+    file.close();
+    return true;
  }
