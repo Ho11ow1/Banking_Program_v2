@@ -142,7 +142,6 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\account.cpp" />
-    <ClCompile Include="src\balance.cpp" />
     <ClCompile Include="src\banking.cpp" />
     <ClCompile Include="src\card.cpp" />
     <ClCompile Include="src\database.cpp" />
@@ -152,7 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\account.h" />
-    <ClInclude Include="src\balance.h" />
     <ClInclude Include="src\banking.h" />
     <ClInclude Include="src\card.h" />
     <ClInclude Include="src\constants.h" />

@@ -17,6 +17,11 @@ public:
     void ShowDetails() noexcept;
     void UpdateBalance() noexcept;
 
+    std::string GetaccountHolder() const;
+    uint_fast64_t GetAccoutNumber() const;
+    uint_fast64_t GetAccoutRoutingNumber() const;
+    double GetAccountBalance() const;
+    void GetBalance() const;
 private:
     Card card;
 

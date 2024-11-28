@@ -2,8 +2,10 @@
 #include <random>
 
 #include "./account.h"
+#include "./database.h"
 #include "./util/validation.h"
-#include "util/generation.h"
+#include "./util/generation.h"
+Database DB;
 Validation validation;
 
 bool Account::Register()
@@ -17,14 +19,15 @@ bool Account::Register()
 
         card.SetDetails();
         card.UpdateBalance(accountBalance);
+
+        DB.SaveAccount(*this);
+        DB.SaveCard(card);
     }
     catch (std::exception& e)
     {
         printf("%s", e.what());
         return false;
     }
-
-    // Add SQLite update records
 
     return true;
 }
@@ -83,4 +86,29 @@ void Account::UpdateBalance() noexcept // Turn this into a helper function to ha
 
     accountBalance += temp;
     card.UpdateBalance(temp);
+}
+
+std::string Account::GetaccountHolder() const
+{
+    return accountHolder;
+}
+
+uint_fast64_t Account::GetAccoutNumber() const
+{
+    return accountNumber;
+}
+
+uint_fast64_t Account::GetAccoutRoutingNumber() const
+{
+    return routingNumber;
+}
+
+double Account::GetAccountBalance() const
+{
+    return accountBalance;
+}
+
+void Account::GetBalance() const
+{
+    printf("Account Balance: %.2lf", accountBalance);
 }

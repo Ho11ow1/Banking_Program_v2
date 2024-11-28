@@ -68,11 +68,10 @@ void Banking::Run() noexcept
             {
                 printf("\n=== Banking Menu ===\n");
                 printf("1. Show Account Details\n");
-                printf("2. Deposit\n");
-                printf("3. Withdraw\n");
-                printf("4. Check Balance\n");
-                printf("5. Log out\n");
-                printf("6. Exit\n");
+                printf("2. Manage Balance\n");
+                printf("3. Check Balance\n");
+                printf("4. Log out\n");
+                printf("5. Exit\n");
                 printf("==================\n");
                 printf("Choose option: ");
 
@@ -93,21 +92,17 @@ void Banking::Run() noexcept
                     break;
                     case 2:
                         system("cls");
-                        account.UpdateBalance(); // Deposit
+                        // account.UpdateBalance(); // Turn this into a manager of sorts
                     break;
                     case 3:
                         system("cls");
-                        account.UpdateBalance(); // Withdraw
+                        account.GetBalance();
                     break;
                     case 4:
                         system("cls");
-                        // TODO: Implement Check Balance
-                    break;
-                    case 5:
-                        system("cls");
                         isLoggedIn = false;
                     break;
-                    case 6:
+                    case 5:
                         printf("Thank you for using this app...\n");
                         isRunning = false;
                     break;
@@ -122,5 +117,4 @@ void Banking::Run() noexcept
     {
         printf("%s\n", e.what());
     }
-
 }

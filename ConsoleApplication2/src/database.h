@@ -12,16 +12,14 @@ class Database
 public:
     Database() = default;
 
-    void SaveAccount(Account &account);
-    void SaveCard(Card &card);
-    void LoadAccount(Account &account);
-    void LoadCard(Card &card);
-
     bool DBExists();
     bool CreateDB();
 
+    bool SaveAccount(Account& account);
+    bool SaveCard(Card& card);
+
 private:
-    sqlite3 *db;
+    sqlite3* db = nullptr;
 };
 
 #endif

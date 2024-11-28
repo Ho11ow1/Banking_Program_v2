@@ -34,7 +34,13 @@ double Card::GetBalance() const
 	return balance;
 }
 
-void Card::UpdateBalance(double amount) noexcept // turn this into a helper function to handle both deposit and withdraw
+uint_fast64_t Card::GetAccountNumber() const
+{
+	return 1;
+}
+
+void Card::UpdateBalance(double amount) noexcept // Refactor into a template from Account.ManageBalance()
 {
 	balance += amount;
 }
+
