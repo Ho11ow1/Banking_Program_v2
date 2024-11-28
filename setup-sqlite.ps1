@@ -7,15 +7,17 @@ $amalgamationZip = "sqlite-amalgamation.zip"
 $dllZip = "sqlite-dll.zip"
 
 # Create the sqlite directory if it doesn't exist
-New-Item -ItemType Directory -Force -Path $outputPath
+New-Item -ItemType Directory -Force -Path $outputPath 
 New-Item -ItemType Directory -Force -Path $dllOutputPath
 
+Write-Host "Downloading files..." # Simply for end user convenience
 # Download both zip files
-Write-Host "Downloading files..."
+#-Uri = URL | #-OutFile = Output
 Invoke-WebRequest -Uri $amalgamationUrl -OutFile $amalgamationZip
 Invoke-WebRequest -Uri $dllUrl -OutFile $dllZip
 
 # Extract the contents
+#Expand = Extract
 Expand-Archive -Path $amalgamationZip -DestinationPath "temp_amalgamation" -Force
 Expand-Archive -Path $dllZip -DestinationPath "temp_dll" -Force
 
@@ -39,19 +41,20 @@ if ($defFile)
 }
 
 # Clean up
+#-Recurse = Recursively(Until no instance remains)
 Remove-Item -Recurse -Force "temp_amalgamation"
 Remove-Item -Recurse -Force "temp_dll"
 Remove-Item $amalgamationZip
 Remove-Item $dllZip
 
-# Create .lib file using lib.exe - with improved error handling and debugging
+# Create .lib file using lib.bat - with improved error handling and debugging
 Write-Host "Attempting to create .lib file..."
 
 # Try to find Visual Studio installation
 $vsWhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-if (Test-Path $vsWhere) 
+if (Test-Path $vsWhere) #Set Test-Path to vsWhere
 {
-    $vsPath = & $vsWhere -latest -property installationPath
+    $vsPath = & $vsWhere -latest -property installationPath #Set vsPath to the latest installationPath found | -property = value (Sort of)
     if ($vsPath) 
     {
         Write-Host "Found Visual Studio at: $vsPath"
@@ -65,12 +68,11 @@ cd /d "$outputPath"
 lib /DEF:sqlite3.def /OUT:sqlite3.lib /MACHINE:X64
 "@ | Out-File -FilePath $tempBatch -Encoding ASCII
         
-        # Execute the batch file and capture output
         Write-Host "Executing lib command..."
-        $result = cmd.exe /c $tempBatch 2>&1
+        $result = cmd.exe /c $tempBatch 2>&1 #Run the .bat and capture output (Something like returning)
         Write-Host $result
         
-        # Clean up
+        # Clean up | -ErrorAction = If an error is thrown do ?
         Remove-Item $tempBatch -ErrorAction SilentlyContinue
     } 
     else 
