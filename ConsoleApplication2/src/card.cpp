@@ -1,17 +1,26 @@
+#include <cstdio> // DEBUG
 #include "./card.h"
+#include "./database.h"
 #include "./util/generation.h"
 #include "./util/validation.h"
 
 // Most likely to be empty as Card is just a data structure
 // I guess that statement didn't last long
 
-void Card::SetDetails()
+void Card::SetDetails(uint_fast64_t accountNum)
 {
 	Validation validation;
 
 	cardNumber = GenerateNumber();
 	PIN = validation.GetValidPIN("Input Desired PIN");
-	SCV = validation.GetValidSCV("Input Desired SCV");
+	CSV = validation.GetValidCSV("Input Desired CSV");
+	accountNumber = accountNum;
+
+	Database DB;
+	if (!DB.SaveCard(*this)) 
+	{
+		printf("Failed to save card details to database\n");
+	}
 }
 
 uint_fast64_t Card::GetCardNumber() const
@@ -24,9 +33,9 @@ uint_fast16_t Card::GetPIN() const
 	return PIN;
 }
 
-uint_fast16_t Card::GetSCV() const
+uint_fast16_t Card::GetCSV() const
 {
-	return SCV;
+	return CSV;
 }
 
 double Card::GetBalance() const
@@ -36,7 +45,7 @@ double Card::GetBalance() const
 
 uint_fast64_t Card::GetAccountNumber() const
 {
-	return 1;
+	return accountNumber;
 }
 
 void Card::UpdateBalance(double amount) noexcept // Refactor into a template from Account.ManageBalance()

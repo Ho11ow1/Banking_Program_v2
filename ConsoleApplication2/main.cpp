@@ -1,5 +1,3 @@
-#include <cstdio>
-
 #include "./src/banking.h"
 
 int main(int argc, char** argv[])

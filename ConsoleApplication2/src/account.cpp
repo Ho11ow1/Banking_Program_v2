@@ -1,27 +1,28 @@
 #include <cstdio>
-#include <random>
 
 #include "./account.h"
 #include "./database.h"
 #include "./util/validation.h"
 #include "./util/generation.h"
-Database DB;
-Validation validation;
 
 bool Account::Register()
 {
     try
     {
+        static Database db;  // Make database connection static
+        
+        Validation validation;
         accountHolder = validation.GetValidInput("Input Account Name + Surname");
         accountNumber = GenerateNumber(); // leave as a creative decision
         routingNumber = GenerateNumber(); // leave as a creative decision
         accountBalance = 0;
 
-        card.SetDetails();
-        card.UpdateBalance(accountBalance);
+        db.SaveAccount(*this);
 
-        DB.SaveAccount(*this);
-        DB.SaveCard(card);
+        card.UpdateBalance(accountBalance);
+        card.SetDetails(accountNumber);
+
+        return true;
     }
     catch (std::exception& e)
     {
@@ -60,7 +61,7 @@ void Account::ShowDetails() noexcept
         printf("Card Details:\n");
         printf("  Card Number: %lld\n", card.GetCardNumber());
         printf("  PIN: %hu\n", card.GetPIN());
-        printf("  SCV: %hu\n", card.GetSCV());
+        printf("  CSV: %u\n", card.GetCSV());
         printf("  Balance: $%.2f\n", card.GetBalance());
     }
 }

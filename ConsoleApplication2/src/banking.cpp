@@ -5,16 +5,27 @@
 
 void Banking::Run() noexcept
 {
+    if (!DB.OpenDB())
+    {
+        printf("Failed to open database connection\n");
+        return;
+    }
+
     if (!DB.DBExists())
     {
         printf("Database doesn't exist, Creating new database\n\n");
         try
         {
-            DB.CreateDB();
+            if (!DB.CreateDB()) 
+            {
+                printf("Failed to create database tables\n");
+                return;
+            }
         }
         catch (const std::exception& e)
         {
             printf("%s\n", e.what());
+            return;
         }
     }
     try
@@ -117,4 +128,6 @@ void Banking::Run() noexcept
     {
         printf("%s\n", e.what());
     }
+
+    DB.CloseDB();
 }

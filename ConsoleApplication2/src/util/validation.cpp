@@ -1,7 +1,5 @@
-#include <cstring>
-
+#include <cstdio>
 #include "./validation.h"
-#include "../constants.h"
 
 std::string Validation::GetValidInput(std::string prompt)
 {
@@ -60,7 +58,7 @@ uint_fast16_t Validation::GetValidPIN(std::string prompt)
     do
     {
         printf("%s (%hhu numbers): ", prompt.c_str(), Constants::PIN_LENGTH);
-        if (scanf_s("%hu", &temp) != 1)
+        if (scanf_s("%u", &temp) != 1)
         {
             printf("Invalid input\n");
             while (getchar() != '\n');
@@ -73,14 +71,14 @@ uint_fast16_t Validation::GetValidPIN(std::string prompt)
     return temp;
 }
 
-uint_fast16_t Validation::GetValidSCV(std::string prompt)
+uint_fast16_t Validation::GetValidCSV(std::string prompt)
 {
     uint_fast16_t temp{};
 
     do
     {
         printf("%s (%hhu numbers): ", prompt.c_str(), Constants::SCV_LENGTH);
-        if (scanf_s("%hu", &temp) != 1)
+        if (scanf_s("%u", &temp) != 1)
         {
             printf("Invalid input\n");
             while (getchar() != '\n');
