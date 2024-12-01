@@ -91,25 +91,22 @@ uint_fast16_t Validation::GetValidCSV(std::string prompt)
     return temp;
 }
 
-bool Validation::ValidateNums(uint_fast16_t num, uint_fast8_t length)
+uint_fast64_t Validation::GetValid64(std::string prompt)
 {
-    uint_fast8_t count = 0;
+    uint_fast64_t temp{};
 
-    if (num == 0)
+    do
     {
-        count = 1;
-    }
-    while (num > 0)
-    {
-        num /= 10;
-        count++;
-    }
+        printf("%s (%hhu numbers): ", prompt.c_str(), Constants::CARD_NUMBER_LENGTH - 4);
+        if (scanf_s("%llu", &temp) != 1)
+        {
+            printf("Invalid input\n");
+            while (getchar() != '\n');
+            continue;
+        }
+        while (getchar() != '\n');
+    } 
+    while (!ValidateNums(temp, 16));
 
-    if (count != length)
-    {
-        printf("Input must be exactly %hhu digits long.\n", length);
-        return false;
-    }
-
-    return true;
+    return temp;
 }
