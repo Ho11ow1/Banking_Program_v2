@@ -1,28 +1,44 @@
-# Banking_Program_v2
+# Banking Program v2
 
-A simple yet effective banking program in ```C++```
-
+A modern `C++` banking application with SQLite integration for persistent data storage.
 
 ## Features
 
-- Account creation
+- Secure account management
+  - Account creation with validation
+  - Login system
+  - Account details viewing
 - Card management
-- Balance management
-- Database entries
+  - Automatic card number generation
+  - PIN and CSV security
+  - Card-account linking
+- Balance operations
+  - Deposits and withdrawals
+  - Real-time balance updates
+  - Synchronized account-card balance
+- SQLite database integration
+  - Persistent data storage
+  - Transaction safety
+  - Automated database setup
 
+## Technical Stack
 
-# Installation Guide
+- C++17
+- SQLite3
+- Visual Studio 2022 build system
+- PowerShell automation
 
 ## Prerequisites
-- Visual Studio 2022 (recommended)
-- G++ compiler installed (optional)
-- Git installed
-- SQLite3 installed
+
+- Visual Studio 2022 (recommended) with C++ workload
+- G++ compiler (optional for alternative build method)
+- Git
 - PowerShell
+- SQLite3 (automatically installed via setup script)
 
 ## Installation Steps
 
-### 1. Clone the project
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Ho11ow1/Banking_Program_v2
 ```
@@ -38,39 +54,56 @@ cd Banking_Program_v2
 .\setup-sqlite.ps1
 ```
 
-### Main Method: Using Visual Studio (Recommended)
+## 4. Build & Run
 
-1. Open `ConsoleApplication2.sln` in Visual Studio
-2. Select your preferred build configuration (Debug/Release) and platform (x64/x86)
-3. Build the solution (Ctrl + Shift + B)
-4. Run the program (Ctrl + F5)
-
-### Alternative Method: Using g++ Compiler
-
-1. Navigate to the project directory:
+#### Method 1: Visual Studio (Recommended)
 ```bash
-cd Banking_Program_v2/ConsoleApplication2
+1. Open 'ConsoleApplication2.sln'
+2. Build: 'Ctrl + Shift + B'
+3. Run: 'Ctrl + F5'
 ```
 
-2. Compile the program:
+#### Method 2: G++ Compiler
+```bash
+cd ConsoleApplication2
+```
 ```bash
 g++ main.cpp src/*.cpp src/util/*.cpp -I./src -I./sqlite/include -L./sqlite/lib -lsqlite3 -o Bank
 ```
-
-3. Run the program:
-```bash
+```
 ./Bank
+```
+
+## Project Structure
+
+```
+ConsoleApplication2/
+├── src/
+│   ├── account.cpp/h    # Account management
+│   ├── banking.cpp/h    # Main application logic
+│   ├── card.cpp/h       # Card operations
+│   ├── database.cpp/h   # SQLite integration
+│   ├── constants.h      # Global constants
+│   └── util/           # Utility functions
+├── sqlite/             # SQLite dependencies
+└── main.cpp           # Entry point
 ```
 
 ## Troubleshooting
 
-If you encounter errors:
+### Common Issues
+#### 1. SQLite Setup Errors:
+   - Run PowerShell as Administrator
+   - Enable script execution:
+     ```powershell
+     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+     ```
 
-- Make sure you're in the correct directory
-- Verify Visual Studio 2022 has `C++` installed (only if using Visual Studio method)
-- Verify G++ compiler is properly installed (only if using alternative method)
-- Ensure SQLite files are present in sqlite/include and sqlite/lib
-- For PowerShell script execution issues:
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
+#### 2. Build Errors:
+   - Verify Visual Studio C++ workload installation
+   - Check SQLite files in sqlite/include and sqlite/lib
+   - Ensure correct platform (x64) selection
+
+#### 3. Runtime Errors:
+   - Verify sqlite3.dll presence in executable directory
+   - Check database file permissions
