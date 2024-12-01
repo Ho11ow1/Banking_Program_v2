@@ -1,0 +1,25 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Compiled files
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.log
+
+# SQLite files
+ConsoleApplication2/sqlite/
+*.db
+*.dll
