@@ -103,7 +103,7 @@ void Banking::Run() noexcept
                     break;
                     case 2:
                         system("cls");
-                        // account.UpdateBalance(); // Turn this into a manager of sorts
+                        account.ManageBalance();
                     break;
                     case 3:
                         system("cls");

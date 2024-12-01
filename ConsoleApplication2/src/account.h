@@ -14,8 +14,10 @@ public:
     bool Register();
     bool Login();
     void ShowDetails() noexcept;
-    void UpdateBalance() noexcept;
+    void ManageBalance() noexcept;
+    void UpdateBalance(double amount);
 
+    // Getters
     std::string GetaccountHolder() const;
     uint_fast64_t GetAccoutNumber() const;
     uint_fast64_t GetAccoutRoutingNumber() const;
@@ -28,6 +30,9 @@ private:
     uint_fast64_t accountNumber{};
     uint_fast64_t routingNumber{};
     double accountBalance = 0;
+
+private:
+    void HandleBalance(bool Deposit) noexcept;
 };
 
 #endif

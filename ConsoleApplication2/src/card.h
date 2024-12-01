@@ -9,12 +9,18 @@ public:
     Card() = default;
 
     void SetDetails(uint_fast64_t accountNum);
+    void UpdateBalance(double amount) noexcept;
+    // Getters
     uint_fast64_t GetCardNumber() const;
     uint_fast16_t GetPIN() const;
     uint_fast16_t GetCSV() const;
     double GetBalance() const;
     uint_fast64_t GetAccountNumber() const;
-    void UpdateBalance(double amount) noexcept;
+    // Setters
+    void SetCardNumber(uint_fast64_t cardNum);
+    void SetPIN(uint_fast16_t pin);
+    void SetCSV(uint_fast16_t csv);
+    void SetBalance(double amount);
     
 private:
     uint_fast64_t cardNumber{};

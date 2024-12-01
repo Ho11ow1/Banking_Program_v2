@@ -23,6 +23,28 @@ void Card::SetDetails(uint_fast64_t accountNum)
 	}
 }
 
+void Card::UpdateBalance(double amount) noexcept
+{
+    // For withdrawals (negative amounts), check if sufficient funds exist
+    if (amount < 0 && std::abs(amount) > balance) 
+	{
+        printf("Insufficient funds. Current balance: $%.2f\n", balance);
+        return;
+    }
+    
+    balance += amount;
+    
+    // Update the database
+    Database DB;
+    if (!DB.UpdateBalances(accountNumber, balance)) 
+	{
+        printf("Failed to update balances in database\n");
+        return;
+    }
+    
+    printf("Transaction successful. New balance: $%.2f\n", balance);
+}
+// Getters and Setters
 uint_fast64_t Card::GetCardNumber() const
 {
 	return cardNumber;
@@ -48,8 +70,22 @@ uint_fast64_t Card::GetAccountNumber() const
 	return accountNumber;
 }
 
-void Card::UpdateBalance(double amount) noexcept // Refactor into a template from Account.ManageBalance()
+void Card::SetCardNumber(uint_fast64_t cardNum)
 {
-	balance += amount;
+	cardNumber = cardNum;
 }
 
+void Card::SetPIN(uint_fast16_t pin)
+{
+	PIN = pin;
+}
+
+void Card::SetCSV(uint_fast16_t csv)
+{
+	CSV = csv;
+}
+
+void Card::SetBalance(double amount)
+{
+	balance = amount;
+}
