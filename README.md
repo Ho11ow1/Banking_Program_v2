@@ -107,3 +107,4 @@ ConsoleApplication2/
 #### 3. Runtime Errors:
    - Verify sqlite3.dll presence in executable directory
    - Check database file permissions
+
