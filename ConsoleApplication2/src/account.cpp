@@ -12,15 +12,15 @@ bool Account::Register()
     try
     {
         
-        accountHolder = validation.GetValidInput("Input Account Name + Surname");
-        accountNumber = GenerateNumber(); // leave as a creative decision
-        routingNumber = GenerateNumber(); // leave as a creative decision
-        accountBalance = 0;
+        m_accountHolder = validation.GetValidInput("Input Account Name + Surname");
+        m_accountNumber = GenerateNumber(); // leave as a creative decision
+        m_routingNumber = GenerateNumber(); // leave as a creative decision
+        m_accountBalance = 0;
 
         db.SaveAccount(*this);
 
-        card.SetBalance(accountBalance);
-        card.SetDetails(accountNumber);
+        card.SetBalance(m_accountBalance);
+        card.SetDetails(m_accountNumber);
 
         return true;
     }
@@ -68,10 +68,10 @@ bool Account::Login()
     bool success = false;
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        accountHolder = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
-        accountNumber = sqlite3_column_int64(stmt, 1);
-        routingNumber = sqlite3_column_int64(stmt, 2);
-        accountBalance = sqlite3_column_double(stmt, 3);
+        m_accountHolder = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+        m_accountNumber = sqlite3_column_int64(stmt, 1);
+        m_routingNumber = sqlite3_column_int64(stmt, 2);
+        m_accountBalance = sqlite3_column_double(stmt, 3);
 
         if (sqlite3_column_type(stmt, 4) != SQLITE_NULL)
         {
@@ -90,10 +90,10 @@ bool Account::Login()
 
 void Account::ShowDetails() noexcept
 {
-    printf("Account Holder: %s", accountHolder.c_str());
-    printf("Account Number: %lld\n", accountNumber);
-    printf("Routing Number: %lld\n", routingNumber);
-    printf("Account Balance: $%.2f\n", accountBalance);
+    printf("Account Holder: %s", m_accountHolder.c_str());
+    printf("Account Number: %lld\n", m_accountNumber);
+    printf("Routing Number: %lld\n", m_routingNumber);
+    printf("Account Balance: $%.2f\n", m_accountBalance);
     
     if (&card != nullptr)
     {
@@ -164,38 +164,38 @@ void Account::HandleBalance(bool Deposit) noexcept
 void Account::UpdateBalance(double amount)
 {
     // For withdrawals (negative amounts), check if sufficient funds exist
-    if (amount < 0 && std::abs(amount) > accountBalance)
+    if (amount < 0 && std::abs(amount) > m_accountBalance)
     {
-        printf("Insufficient funds. Current balance: $%.2f\n", accountBalance);
+        printf("Insufficient funds. Current balance: $%.2f\n", m_accountBalance);
         return;
     }
 
-    accountBalance += amount;
+    m_accountBalance += amount;
 
-    printf("Transaction successful. New balance: $%.2f\n", accountBalance);
+    printf("Transaction successful. New balance: $%.2f\n", m_accountBalance);
 }
 
 std::string Account::GetaccountHolder() const
 {
-    return accountHolder;
+    return m_accountHolder;
 }
 
 uint_fast64_t Account::GetAccoutNumber() const
 {
-    return accountNumber;
+    return m_accountNumber;
 }
 
 uint_fast64_t Account::GetAccoutRoutingNumber() const
 {
-    return routingNumber;
+    return m_routingNumber;
 }
 
 double Account::GetAccountBalance() const
 {
-    return accountBalance;
+    return m_accountBalance;
 }
 
 void Account::GetBalance() const
 {
-    printf("Account Balance: %.2lf", accountBalance);
+    printf("Account Balance: %.2lf", m_accountBalance);
 }

@@ -26,10 +26,10 @@ public:
 private:
     Card card;
 
-    std::string accountHolder{};
-    uint_fast64_t accountNumber{};
-    uint_fast64_t routingNumber{};
-    double accountBalance = 0;
+    std::string m_accountHolder{};
+    uint_fast64_t m_accountNumber{};
+    uint_fast64_t m_routingNumber{};
+    double m_accountBalance = 0;
 
 private:
     void HandleBalance(bool Deposit) noexcept;

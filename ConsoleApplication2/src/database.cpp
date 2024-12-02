@@ -26,7 +26,7 @@ bool Database::DBExists()
     sqlite3_stmt* stmt;
     int tableCount = 0;
     
-    if (sqlite3_prepare_v2(db.get(), sql, -1, &stmt, nullptr) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_db.get(), sql, -1, &stmt, nullptr) == SQLITE_OK)
     {
         while (sqlite3_step(stmt) == SQLITE_ROW)
         {
@@ -35,7 +35,7 @@ bool Database::DBExists()
         sqlite3_finalize(stmt); // Finalize the statement
     }
 
-    sqlite3_close(db.get());
+    sqlite3_close(m_db.get());
     return tableCount == 2; // Return true if both 'Account' and 'Card' tables are found
 }
 
@@ -47,7 +47,7 @@ bool Database::CreateDB()
         printf("Error creating database: %s\n", sqlite3_errmsg(raw_db));
         return false;
     }
-    db.reset(raw_db); // Transfer ownership to smart pointer
+    m_db.reset(raw_db); // Transfer ownership to smart pointer
 
     char* errMsg = nullptr;
     bool success = true;
@@ -69,7 +69,7 @@ bool Database::CreateDB()
         "FOREIGN KEY (account_number) REFERENCES Account(account_number));";
 
     // Execute the SQL statements
-    if (sqlite3_exec(db.get(), accountSQL, nullptr, nullptr, &errMsg) != SQLITE_OK || sqlite3_exec(db.get(), cardSQL, nullptr, nullptr, &errMsg) != SQLITE_OK)
+    if (sqlite3_exec(m_db.get(), accountSQL, nullptr, nullptr, &errMsg) != SQLITE_OK || sqlite3_exec(m_db.get(), cardSQL, nullptr, nullptr, &errMsg) != SQLITE_OK)
     {
         printf("Error creating tables: %s\n", errMsg);
         sqlite3_free(errMsg);
@@ -81,23 +81,23 @@ bool Database::CreateDB()
 
 bool Database::SaveAccount(Account& account)
 {
-    if (!EnsureConnected() || (!accountStmt && !PrepareStatements()))
+    if (!EnsureConnected() || (!m_accountStmt && !PrepareStatements()))
     {
         return false; // Error connecting to the database or preparing statements
     }
 
-    sqlite3_reset(accountStmt.get()); // Reset the statement
-    sqlite3_clear_bindings(accountStmt.get()); // Clear any existing bindings // Shouldn't ever happen
+    sqlite3_reset(m_accountStmt.get()); // Reset the statement
+    sqlite3_clear_bindings(m_accountStmt.get()); // Clear any existing bindings // Shouldn't ever happen
 
     std::string holder = account.GetaccountHolder();
-    sqlite3_bind_text(accountStmt.get(), 1, holder.c_str(), holder.length(), SQLITE_STATIC);
-    sqlite3_bind_int64(accountStmt.get(), 2, account.GetAccoutNumber());
-    sqlite3_bind_int64(accountStmt.get(), 3, account.GetAccoutRoutingNumber());
-    sqlite3_bind_double(accountStmt.get(), 4, account.GetAccountBalance());
+    sqlite3_bind_text(m_accountStmt.get(), 1, holder.c_str(), holder.length(), SQLITE_STATIC);
+    sqlite3_bind_int64(m_accountStmt.get(), 2, account.GetAccoutNumber());
+    sqlite3_bind_int64(m_accountStmt.get(), 3, account.GetAccoutRoutingNumber());
+    sqlite3_bind_double(m_accountStmt.get(), 4, account.GetAccountBalance());
 
-    if (sqlite3_step(accountStmt.get()) != SQLITE_DONE)
+    if (sqlite3_step(m_accountStmt.get()) != SQLITE_DONE)
     {
-        printf("Error inserting account: %s\n", sqlite3_errmsg(db.get()));
+        printf("Error inserting account: %s\n", sqlite3_errmsg(m_db.get()));
         return false; // Error executing the SQL statement
     }
 
@@ -106,23 +106,23 @@ bool Database::SaveAccount(Account& account)
 
 bool Database::SaveCard(Card& card)
 {
-    if (!EnsureConnected() || (!cardStmt && !PrepareStatements()))
+    if (!EnsureConnected() || (!m_cardStmt && !PrepareStatements()))
     {
         return false; // Error connecting to the database or preparing statements
     }
 
-    sqlite3_reset(cardStmt.get()); // Reset the statement
-    sqlite3_clear_bindings(cardStmt.get()); // Clear any existing bindings // Shouldn't ever happen
+    sqlite3_reset(m_cardStmt.get()); // Reset the statement
+    sqlite3_clear_bindings(m_cardStmt.get()); // Clear any existing bindings // Shouldn't ever happen
 
-    sqlite3_bind_int64(cardStmt.get(), 1, card.GetCardNumber());
-    sqlite3_bind_int(cardStmt.get(), 2, card.GetPIN());
-    sqlite3_bind_int(cardStmt.get(), 3, card.GetCSV());
-    sqlite3_bind_double(cardStmt.get(), 4, card.GetBalance());
-    sqlite3_bind_int64(cardStmt.get(), 5, card.GetAccountNumber());
+    sqlite3_bind_int64(m_cardStmt.get(), 1, card.GetCardNumber());
+    sqlite3_bind_int(m_cardStmt.get(), 2, card.GetPIN());
+    sqlite3_bind_int(m_cardStmt.get(), 3, card.GetCSV());
+    sqlite3_bind_double(m_cardStmt.get(), 4, card.GetBalance());
+    sqlite3_bind_int64(m_cardStmt.get(), 5, card.GetAccountNumber());
 
-    if (sqlite3_step(cardStmt.get()) != SQLITE_DONE)
+    if (sqlite3_step(m_cardStmt.get()) != SQLITE_DONE)
     {
-        printf("Error inserting card: %s\n", sqlite3_errmsg(db.get()));
+        printf("Error inserting card: %s\n", sqlite3_errmsg(m_db.get()));
         return false; // Error executing the SQL statement
     }
 
@@ -131,7 +131,7 @@ bool Database::SaveCard(Card& card)
 
 bool Database::OpenDB()
 {
-    if (connected) 
+    if (m_connected) 
     {
         return true; // Database is already open
     }
@@ -139,8 +139,8 @@ bool Database::OpenDB()
     sqlite3* raw_db = nullptr;
     if (sqlite3_open(Constants::DB_NAME, &raw_db) == SQLITE_OK) 
     {
-        db.reset(raw_db); // Transfer ownership to smart pointer
-        connected = true;
+        m_db.reset(raw_db); // Transfer ownership to smart pointer
+        m_connected = true;
         return PrepareStatements();
     }
     return false; // Error opening the database
@@ -149,10 +149,10 @@ bool Database::OpenDB()
 void Database::CloseDB()
 {
     // All unique pointer resets
-    accountStmt.reset();
-    cardStmt.reset();
-    db.reset();
-    connected = false;
+    m_accountStmt.reset();
+    m_cardStmt.reset();
+    m_db.reset();
+    m_connected = false;
 }
 
 /**
@@ -171,8 +171,8 @@ bool Database::PrepareStatements()
     }
 
     // All unique pointer resets
-    accountStmt.reset();
-    cardStmt.reset();
+    m_accountStmt.reset();
+    m_cardStmt.reset();
 
     const char* accountSQL = "INSERT INTO Account (account_holder, account_number, routing_number, balance) VALUES (?, ?, ?, ?);";
     const char* cardSQL = "INSERT INTO Card (card_number, PIN, CSV, balance, account_number) VALUES (?, ?, ?, ?, ?);";
@@ -180,15 +180,15 @@ bool Database::PrepareStatements()
     sqlite3_stmt* raw_stmt = nullptr;
     
     // Prepare card statement
-    if (sqlite3_prepare_v2(db.get(), cardSQL, -1, &raw_stmt, nullptr) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_db.get(), cardSQL, -1, &raw_stmt, nullptr) == SQLITE_OK)
     {
-        cardStmt.reset(raw_stmt);
+        m_cardStmt.reset(raw_stmt);
     }
 
     // Prepare account statement
-    if (sqlite3_prepare_v2(db.get(), accountSQL, -1, &raw_stmt, nullptr) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_db.get(), accountSQL, -1, &raw_stmt, nullptr) == SQLITE_OK)
     {
-        accountStmt.reset(raw_stmt);
+        m_accountStmt.reset(raw_stmt);
     }
 
     return true; // Statements successfully prepared
@@ -196,7 +196,7 @@ bool Database::PrepareStatements()
 
 bool Database::EnsureConnected()
 {
-    return connected || OpenDB(); // Attempt to open the database if not already open
+    return m_connected || OpenDB(); // Attempt to open the database if not already open
 }
 
 bool Database::UpdateBalances(uint_fast64_t accountNum, double newBalance)
@@ -207,9 +207,9 @@ bool Database::UpdateBalances(uint_fast64_t accountNum, double newBalance)
     const char* sql1 = "UPDATE Account SET balance = ? WHERE account_number = ?;";
     sqlite3_stmt* stmt1;
     
-    if (sqlite3_prepare_v2(db.get(), sql1, -1, &stmt1, nullptr) != SQLITE_OK) 
+    if (sqlite3_prepare_v2(m_db.get(), sql1, -1, &stmt1, nullptr) != SQLITE_OK) 
     {
-        printf("Error preparing Account statement: %s\n", sqlite3_errmsg(db.get()));
+        printf("Error preparing Account statement: %s\n", sqlite3_errmsg(m_db.get()));
         return false;
     }
 
@@ -223,9 +223,9 @@ bool Database::UpdateBalances(uint_fast64_t accountNum, double newBalance)
     const char* sql2 = "UPDATE Card SET balance = ? WHERE account_number = ?;";
     sqlite3_stmt* stmt2;
     
-    if (sqlite3_prepare_v2(db.get(), sql2, -1, &stmt2, nullptr) != SQLITE_OK)
+    if (sqlite3_prepare_v2(m_db.get(), sql2, -1, &stmt2, nullptr) != SQLITE_OK)
     {
-        printf("Error preparing Card statement: %s\n", sqlite3_errmsg(db.get()));
+        printf("Error preparing Card statement: %s\n", sqlite3_errmsg(m_db.get()));
         return false;
     }
 

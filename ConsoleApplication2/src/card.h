@@ -23,11 +23,11 @@ public:
     void SetBalance(double amount);
     
 private:
-    uint_fast64_t cardNumber{};
-    uint_fast16_t PIN{};
-    uint_fast16_t CSV{};
-    double balance{};
-    uint_fast64_t accountNumber{};
+    uint_fast64_t m_cardNumber{};
+    uint_fast16_t m_PIN{};
+    uint_fast16_t m_CSV{};
+    double m_balance{};
+    uint_fast64_t m_accountNumber{};
 };
 
 #endif

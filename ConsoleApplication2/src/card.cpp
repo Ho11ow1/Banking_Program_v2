@@ -11,10 +11,10 @@ void Card::SetDetails(uint_fast64_t accountNum)
 {
 	Validation validation;
 
-	cardNumber = GenerateNumber();
-	PIN = validation.GetValidPIN("Input Desired PIN");
-	CSV = validation.GetValidCSV("Input Desired CSV");
-	accountNumber = accountNum;
+	m_cardNumber = GenerateNumber();
+	m_PIN = validation.GetValidPIN("Input Desired PIN");
+	m_CSV = validation.GetValidCSV("Input Desired CSV");
+	m_accountNumber = accountNum;
 
 	Database DB;
 	if (!DB.SaveCard(*this)) 
@@ -26,66 +26,66 @@ void Card::SetDetails(uint_fast64_t accountNum)
 void Card::UpdateBalance(double amount) noexcept
 {
     // For withdrawals (negative amounts), check if sufficient funds exist
-    if (amount < 0 && std::abs(amount) > balance) 
+    if (amount < 0 && std::abs(amount) > m_balance)
 	{
-        printf("Insufficient funds. Current balance: $%.2f\n", balance);
+        printf("Insufficient funds. Current balance: $%.2f\n", m_balance);
         return;
     }
     
-    balance += amount;
+	m_balance += amount;
     
     // Update the database
     Database DB;
-    if (!DB.UpdateBalances(accountNumber, balance)) 
+    if (!DB.UpdateBalances(m_accountNumber, m_balance))
 	{
         printf("Failed to update balances in database\n");
         return;
     }
     
-    printf("Transaction successful. New balance: $%.2f\n", balance);
+    printf("Transaction successful. New balance: $%.2f\n", m_balance);
 }
 // Getters and Setters
 uint_fast64_t Card::GetCardNumber() const
 {
-	return cardNumber;
+	return m_cardNumber;
 }
 
 uint_fast16_t Card::GetPIN() const
 {
-	return PIN;
+	return m_PIN;
 }
 
 uint_fast16_t Card::GetCSV() const
 {
-	return CSV;
+	return m_CSV;
 }
 
 double Card::GetBalance() const
 {
-	return balance;
+	return m_balance;
 }
 
 uint_fast64_t Card::GetAccountNumber() const
 {
-	return accountNumber;
+	return m_accountNumber;
 }
 
 void Card::SetCardNumber(uint_fast64_t cardNum)
 {
-	cardNumber = cardNum;
+	m_cardNumber = cardNum;
 }
 
 void Card::SetPIN(uint_fast16_t pin)
 {
-	PIN = pin;
+	m_PIN = pin;
 }
 
 void Card::SetCSV(uint_fast16_t csv)
 {
-	CSV = csv;
+	m_CSV = csv;
 }
 
 void Card::SetBalance(double amount)
 {
-	balance = amount;
+	m_balance = amount;
 }

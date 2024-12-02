@@ -14,7 +14,8 @@ class Card;
 // Automatically provided through documentation:
 struct SQLiteDBDeleter 
 {
-    void operator()(sqlite3* db) const {
+    void operator()(sqlite3* db) const 
+    {
 
         if (db) 
         {
@@ -44,7 +45,7 @@ public:
     bool CreateDB();
 
     bool OpenDB();
-    sqlite3* GetDB() const { return db.get(); }
+    sqlite3* GetDB() const { return m_db.get(); }
     void CloseDB();
 
     bool SaveAccount(Account& account);
@@ -55,11 +56,11 @@ public:
 private:
     bool EnsureConnected();
     bool PrepareStatements();
-    bool connected = false;
+    bool m_connected = false;
 
-    std::unique_ptr<sqlite3, SQLiteDBDeleter> db;
-    std::unique_ptr<sqlite3_stmt, SQLiteStmtDeleter> accountStmt;
-    std::unique_ptr<sqlite3_stmt, SQLiteStmtDeleter> cardStmt;
+    std::unique_ptr<sqlite3, SQLiteDBDeleter> m_db;
+    std::unique_ptr<sqlite3_stmt, SQLiteStmtDeleter> m_accountStmt;
+    std::unique_ptr<sqlite3_stmt, SQLiteStmtDeleter> m_cardStmt;
 };
 
 #endif
